@@ -44,7 +44,10 @@ class RunClickerService {
       case 'macos':
         final libUri = executableUri.resolve('../Frameworks/libautoclicker.dylib');
         return libUri.toFilePath();
-        
+      case 'windows':
+        // TODO: find correct path
+        final libUri = r'native_autoclicker\windows_autoclicker\compiled_library\libautoclicker.dll';
+        return libUri;
       default:
         throw UnsupportedError('Unsupported platform');
     }

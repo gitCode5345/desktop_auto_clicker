@@ -1,4 +1,4 @@
-#include "../include/autoclicker_mac.h"
+#include "autoclicker_mac.h"
 
 #include <thread>
 #include <atomic>
@@ -19,8 +19,10 @@ struct MouseEventTypeMac {
     CGEventType click_up;
 };
 
-void startClickingLoop(MouseEventTypeMac event_type) {
-    while (!is_stopped) {
+void startClickingLoop(MouseEventTypeMac event_type) 
+{
+    while (!is_stopped) 
+    {
         CGEventRef event = CGEventCreate(NULL);
         CGPoint cursorPos = CGEventGetLocation(event);
         CFRelease(event);
@@ -38,22 +40,22 @@ void startClickingLoop(MouseEventTypeMac event_type) {
     }
 }
 
-MouseEventTypeMac getMouseEventType(const char* mouseType) {
+MouseEventTypeMac getMouseEventType(const char* mouseType) 
+{
     std::string type(mouseType);
 
-    if (type == "left") {
+    if (type == "left") 
         return {kCGMouseButtonLeft, kCGEventLeftMouseDown, kCGEventLeftMouseUp};
-    } else if (type == "right") {
+    else if (type == "right") 
         return {kCGMouseButtonRight, kCGEventRightMouseDown, kCGEventRightMouseUp};
-    } else {
+    else 
         return {kCGMouseButtonLeft, kCGEventLeftMouseDown, kCGEventLeftMouseUp};
-    }
 }
 
-FFI_EXPORT void startClicking(int msDelay, const char* mouseType) {
-    if (is_running) {
+FFI_EXPORT_MAC void startClicking(int msDelay, const char* mouseType)
+{
+    if (is_running) 
         return;
-    }
 
     current_delay = msDelay;
     MouseEventTypeMac event_type = getMouseEventType(mouseType);
@@ -63,19 +65,18 @@ FFI_EXPORT void startClicking(int msDelay, const char* mouseType) {
     click_thread = std::thread(startClickingLoop, event_type);
 }
 
-FFI_EXPORT void updateClickingDelay(int msDelay)
+FFI_EXPORT_MAC void updateClickingDelay(int msDelay)
 {
     current_delay = msDelay;
 }
 
-FFI_EXPORT void stopClicking() {
-    if (!is_running) {
+FFI_EXPORT_MAC void stopClicking() {
+    if (!is_running)
         return;
-    }
 
     is_stopped = true;
-    if (click_thread.joinable()) {
+    if (click_thread.joinable())
         click_thread.join();
-    }
+
     is_running = false;
 }
