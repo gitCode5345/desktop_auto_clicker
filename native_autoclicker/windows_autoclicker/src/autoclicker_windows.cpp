@@ -38,7 +38,7 @@ void startClickingLoop(MouseEventTypeWindows button_for_click)
     }
 }
 
-MouseEventTypeWindows getButton(std::string type)
+MouseEventTypeWindows getButton(const std::string type)
 {
     if (type == "left_mouse_button")
         return {INPUT_MOUSE, MOUSEEVENTF_LEFTDOWN, MOUSEEVENTF_LEFTUP};

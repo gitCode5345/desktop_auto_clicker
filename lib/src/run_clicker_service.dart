@@ -42,7 +42,7 @@ class RunClickerService {
 
     switch (Platform.operatingSystem) {
       case 'macos':
-        final libUri = executableUri.resolve('../Frameworks/libautoclicker.dylib');
+        final libUri = executableUri.resolve('../Frameworks/App.framework/Resources/flutter_assets/assets/clicker/libautoclicker.dylib');
         return libUri.toFilePath();
       case 'windows':
         final libUri = executableUri.resolve('data/flutter_assets/assets/clicker/libautoclicker.dll');

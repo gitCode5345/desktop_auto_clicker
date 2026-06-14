@@ -19,7 +19,7 @@ struct MouseEventTypeMac {
     CGEventType click_up;
 };
 
-void startClickingLoop(MouseEventTypeMac event_type) 
+void startClickingLoop(MouseEventTypeMac button_for_click) 
 {
     while (!is_stopped) 
     {
@@ -27,8 +27,8 @@ void startClickingLoop(MouseEventTypeMac event_type)
         CGPoint cursorPos = CGEventGetLocation(event);
         CFRelease(event);
 
-        CGEventRef click_down = CGEventCreateMouseEvent(NULL, event_type.click_down, cursorPos, event_type.button);
-        CGEventRef click_up = CGEventCreateMouseEvent(NULL, event_type.click_up, cursorPos, event_type.button);
+        CGEventRef click_down = CGEventCreateMouseEvent(NULL, button_for_click.click_down, cursorPos, button_for_click.button);
+        CGEventRef click_up = CGEventCreateMouseEvent(NULL, button_for_click.click_up, cursorPos, button_for_click.button);
 
         CGEventPost(kCGHIDEventTap, click_down);
         CGEventPost(kCGHIDEventTap, click_up);
@@ -40,10 +40,8 @@ void startClickingLoop(MouseEventTypeMac event_type)
     }
 }
 
-MouseEventTypeMac getButton(const char* type) 
+MouseEventTypeMac getButton(const std::string type) 
 {
-    std::string type(type);
-
     if (type == "left_mouse_button") 
         return {kCGMouseButtonLeft, kCGEventLeftMouseDown, kCGEventLeftMouseUp};
     else if (type == "right_mouse_button") 
@@ -54,11 +52,13 @@ MouseEventTypeMac getButton(const char* type)
 
 FFI_EXPORT_MAC void startClicking(int msDelay, const char* button)
 {
+    std::string type(button);
+
     if (is_running) 
         return;
 
     current_delay = msDelay;
-    MouseEventTypeMac mouse_event_button = getButton(mouseType);
+    MouseEventTypeMac mouse_event_button = getButton(type);
 
     is_running = true;
     is_stopped = false;
