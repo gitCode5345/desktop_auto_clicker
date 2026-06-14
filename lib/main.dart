@@ -54,15 +54,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 ElevatedButton(
                   onPressed:() {
                     int ms = int.parse(_controller.text);
-                    _service.startClicking(ms, 'left');
+                    _service.startClicking(ms, 'left_mouse_button');
                   },
-                  child: const Text('Left Click'),
+                  child: const Text('Start clicking'),
                 ),
                 ElevatedButton(
                   onPressed:() {
                     _service.stopClicking();
                   },
-                  child: const Text('Stop Click'),
+                  child: const Text('Stop clicking'),
                 ),
               ]
             ),

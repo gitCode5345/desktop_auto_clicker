@@ -1,4 +1,4 @@
-#include "autoclicker_mac.h"
+#include "../include/autoclicker_mac.h"
 
 #include <thread>
 #include <atomic>
@@ -40,29 +40,30 @@ void startClickingLoop(MouseEventTypeMac event_type)
     }
 }
 
-MouseEventTypeMac getMouseEventType(const char* mouseType) 
+MouseEventTypeMac getButton(const char* type) 
 {
-    std::string type(mouseType);
+    std::string type(type);
 
-    if (type == "left") 
+    if (type == "left_mouse_button") 
         return {kCGMouseButtonLeft, kCGEventLeftMouseDown, kCGEventLeftMouseUp};
-    else if (type == "right") 
+    else if (type == "right_mouse_button") 
         return {kCGMouseButtonRight, kCGEventRightMouseDown, kCGEventRightMouseUp};
     else 
         return {kCGMouseButtonLeft, kCGEventLeftMouseDown, kCGEventLeftMouseUp};
 }
 
-FFI_EXPORT_MAC void startClicking(int msDelay, const char* mouseType)
+FFI_EXPORT_MAC void startClicking(int msDelay, const char* button)
 {
     if (is_running) 
         return;
 
     current_delay = msDelay;
-    MouseEventTypeMac event_type = getMouseEventType(mouseType);
+    MouseEventTypeMac mouse_event_button = getButton(mouseType);
 
     is_running = true;
     is_stopped = false;
-    click_thread = std::thread(startClickingLoop, event_type);
+    
+    click_thread = std::thread(startClickingLoop, mouse_event_button);
 }
 
 FFI_EXPORT_MAC void updateClickingDelay(int msDelay)

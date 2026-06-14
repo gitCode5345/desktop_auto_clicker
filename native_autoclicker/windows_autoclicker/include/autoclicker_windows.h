@@ -3,7 +3,7 @@
 
 #define FFI_EXPORT_WINDOWS extern "C" __declspec(dllexport)
 
-FFI_EXPORT_WINDOWS void startClicking(int msDelay, const char* mouseType);
+FFI_EXPORT_WINDOWS void startClicking(int msDelay, const char* button);
 FFI_EXPORT_WINDOWS void updateClickingDelay(int msDelay);
 FFI_EXPORT_WINDOWS void stopClicking();
 

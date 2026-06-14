@@ -45,21 +45,20 @@ class RunClickerService {
         final libUri = executableUri.resolve('../Frameworks/libautoclicker.dylib');
         return libUri.toFilePath();
       case 'windows':
-        // TODO: find correct path
-        final libUri = r'native_autoclicker\windows_autoclicker\compiled_library\libautoclicker.dll';
-        return libUri;
+        final libUri = executableUri.resolve('data/flutter_assets/assets/clicker/libautoclicker.dll');
+        return libUri.toFilePath();
       default:
         throw UnsupportedError('Unsupported platform');
     }
   }
 
-  void startClicking(int msDelay, String mouseType) {
+  void startClicking(int msDelay, String button) {
     if (!_isInitialized) {
       _init();
       _isInitialized = true;
     }
 
-    _startClickingFunc(msDelay, mouseType.toNativeUtf8());
+    _startClickingFunc(msDelay, button.toNativeUtf8());
   }
 
   void updateDelay(int msDelay) {

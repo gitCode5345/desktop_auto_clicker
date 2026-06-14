@@ -1,4 +1,4 @@
-#include "autoclicker_windows.h"
+#include "../include/autoclicker_windows.h"
 
 #include <thread>
 #include <atomic>
@@ -13,17 +13,24 @@ std::atomic<int> current_delay(0);
 
 std::thread click_thread;
 
-void startClickingLoop()
+struct MouseEventTypeWindows
+{
+    DWORD tag_input;
+    DWORD click_down;
+    DWORD click_up;
+};
+
+void startClickingLoop(MouseEventTypeWindows button_for_click)
 {
     while (!is_stopped)
     {
         INPUT inputs[2] = {};
 
-        inputs[0].type = INPUT_MOUSE;
-        inputs[0].mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+        inputs[0].type = button_for_click.tag_input;
+        inputs[0].mi.dwFlags = button_for_click.click_down;
 
-        inputs[1].type = INPUT_MOUSE;
-        inputs[1].mi.dwFlags = MOUSEEVENTF_LEFTUP;
+        inputs[1].type = button_for_click.tag_input;
+        inputs[1].mi.dwFlags = button_for_click.click_up;
 
         SendInput(2, inputs, sizeof(INPUT));
 
@@ -31,18 +38,30 @@ void startClickingLoop()
     }
 }
 
-FFI_EXPORT_WINDOWS void startClicking(int msDelay, const char* mouseType)
+MouseEventTypeWindows getButton(std::string type)
 {
-    std::string type = std::string(mouseType);
+    if (type == "left_mouse_button")
+        return {INPUT_MOUSE, MOUSEEVENTF_LEFTDOWN, MOUSEEVENTF_LEFTUP};
+    else if (type == "right_mouse_button")
+        return {INPUT_MOUSE, MOUSEEVENTF_RIGHTDOWN, MOUSEEVENTF_RIGHTUP};
+    else
+        return {INPUT_MOUSE, MOUSEEVENTF_LEFTDOWN, MOUSEEVENTF_LEFTUP};
+}
+
+FFI_EXPORT_WINDOWS void startClicking(int msDelay, const char* button)
+{
+    std::string type = std::string(button);
 
     if (is_running) 
         return;
-
+    
+    current_delay = msDelay;
+    MouseEventTypeWindows mouse_event_button = getButton(type);
+    
     is_running = true;
     is_stopped = false;
-    current_delay = msDelay;
-    // TODO: make a structure for windows buttons
-    click_thread = std::thread(startClickingLoop);
+
+    click_thread = std::thread(startClickingLoop, mouse_event_button);
 }
 
 FFI_EXPORT_WINDOWS void updateClickingDelay(int msDelay)
