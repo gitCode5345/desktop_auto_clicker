@@ -1,10 +1,17 @@
 import 'package:desktop_auto_clicker/src/features/main_page/domain/entities/button_click_config.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/domain/entities/available_buttons.dart';
+import 'package:desktop_auto_clicker/src/features/main_page/presentation/bloc/clicker/clicker_bloc.dart';
 import 'package:desktop_auto_clicker/src/run_clicker_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    BlocProvider(
+      create: (context) => ClickerBloc(runClickerService: RunClickerService()),
+      child: const MyApp(),
+    )
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -34,9 +41,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _controller = TextEditingController();
-  final RunClickerService _service = RunClickerService();
 
-  String? selectedValue;
+  ButtonClickConfig? selectedValue;
 
   final List<ButtonClickConfig> availableButtons = AvailableButtons.buttons;
 
@@ -51,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
               value: selectedValue,
               items: availableButtons.map((button) {
                 return DropdownMenuItem(
-                  value: button.button.name,
+                  value: button,
                   child: Text(button.name),
                 );
               }).toList(),
@@ -74,13 +80,20 @@ class _MyHomePageState extends State<MyHomePage> {
                 ElevatedButton(
                   onPressed:() {
                     int ms = int.parse(_controller.text);
-                    _service.startClicking(ms, selectedValue!);
+                    context.read<ClickerBloc>().add(
+                      StartClickingEvent(
+                        delay: ms,
+                        button: selectedValue!
+                      )
+                    );
                   },
                   child: const Text('Start clicking'),
                 ),
                 ElevatedButton(
                   onPressed:() {
-                    _service.stopClicking();
+                    context.read<ClickerBloc>().add(
+                      StopClickingEvent()
+                    );
                   },
                   child: const Text('Stop clicking'),
                 ),
