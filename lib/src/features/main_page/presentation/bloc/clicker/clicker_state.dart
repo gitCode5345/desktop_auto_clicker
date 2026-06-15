@@ -9,6 +9,8 @@ sealed class ClickerState extends Equatable {
 
 final class ClickerInitialState extends ClickerState {}
 
+final class ClickerLoadingState extends ClickerState {}
+
 final class ClickerRunningState extends ClickerState {}
 
 final class ClickerStoppedState extends ClickerState {}
