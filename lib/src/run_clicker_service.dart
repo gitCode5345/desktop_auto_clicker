@@ -62,10 +62,20 @@ class RunClickerService {
   }
 
   void updateDelay(int msDelay) {
+    if (!_isInitialized) {
+      _init();
+      _isInitialized = true;
+    }
+
     _updateDelayFunc(msDelay);
   }
 
   void stopClicking() {
+    if (!_isInitialized) {
+      _init();
+      _isInitialized = true;
+    }
+
     _stopClickingFunc();
   }
 }
