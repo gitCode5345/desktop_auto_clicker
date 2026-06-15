@@ -31,6 +31,7 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
 
   Future<void> _onStopClickingEvent(StopClickingEvent event, Emitter<ClickerState> emit) async {
     try {
+      emit(ClickerLoadingState());
       runClickerService.stopClicking();
       emit(ClickerStoppedState());
     }
