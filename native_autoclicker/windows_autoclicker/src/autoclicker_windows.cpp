@@ -8,7 +8,6 @@
 #include <windows.h>
 
 std::atomic<bool> is_running(false);
-std::atomic<bool> is_stopped(false);
 std::atomic<int> current_delay(0);
 
 std::thread click_thread;
@@ -22,7 +21,7 @@ struct MouseEventTypeWindows
 
 void startClickingLoop(MouseEventTypeWindows button_for_click)
 {
-    while (!is_stopped)
+    while (is_running)
     {
         INPUT inputs[2] = {};
 
@@ -59,7 +58,6 @@ FFI_EXPORT_WINDOWS void startClicking(int msDelay, const char* button)
     MouseEventTypeWindows mouse_event_button = getButton(type);
     
     is_running = true;
-    is_stopped = false;
 
     click_thread = std::thread(startClickingLoop, mouse_event_button);
 }
@@ -73,11 +71,9 @@ FFI_EXPORT_WINDOWS void stopClicking()
 {
     if (!is_running)
         return;
-    
-    is_stopped = true;
 
+    is_running = false;
+    
     if (click_thread.joinable())
         click_thread.join();
-    
-    is_running = false;
 }
