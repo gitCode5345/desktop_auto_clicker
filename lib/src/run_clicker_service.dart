@@ -53,12 +53,17 @@ class RunClickerService {
   }
 
   void startClicking(int msDelay, String button) {
-    if (!_isInitialized) {
-      _init();
-      _isInitialized = true;
-    }
+    final buttonPointer = button.toNativeUtf8();
+    try {
+      if (!_isInitialized) {
+        _init();
+        _isInitialized = true;
+      }
 
-    _startClickingFunc(msDelay, button.toNativeUtf8());
+      _startClickingFunc(msDelay, buttonPointer);
+    } finally {
+      calloc.free(buttonPointer);
+    }
   }
 
   void updateDelay(int msDelay) {
