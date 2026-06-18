@@ -8,16 +8,25 @@ sealed class ClickerEvent extends Equatable {
 }
 
 final class StartClickingEvent extends ClickerEvent {
-  final int delay;
-  final ButtonClickConfig button;
+  final ButtonClickConfigEntity button;
 
   const StartClickingEvent({
-    required this.delay,
-    required this.button,
+    required this.button
   });
 
   @override
-  List<Object?> get props => [delay, button];
+  List<Object?> get props => [button];
+}
+
+final class UpdateClickingMsEvent extends ClickerEvent {
+  final ButtonClickConfigEntity button;
+
+  const UpdateClickingMsEvent({
+    required this.button
+  });
+
+  @override
+  List<Object?> get props => [button];
 }
 
 final class StopClickingEvent extends ClickerEvent {}
