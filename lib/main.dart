@@ -10,10 +10,10 @@ void main() {
   configureDependencies();
 
   runApp(
-      BlocProvider(
-        create: (_) => getIt<ClickerBloc>(),
-        child: const MyApp(),
-      )
+    BlocProvider(
+      create: (_) => getIt<ClickerBloc>(),
+      child: const MyApp(),
+    )
   );
 }
 
