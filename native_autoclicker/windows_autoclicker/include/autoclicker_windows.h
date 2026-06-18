@@ -6,5 +6,6 @@
 FFI_EXPORT_WINDOWS void startClicking(int msDelay, const char* button);
 FFI_EXPORT_WINDOWS void updateClickingDelay(int msDelay);
 FFI_EXPORT_WINDOWS void stopClicking();
+FFI_EXPORT_WINDOWS bool isClicking();
 
 #endif

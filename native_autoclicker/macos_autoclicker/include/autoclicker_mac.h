@@ -6,5 +6,6 @@
 FFI_EXPORT_MAC void startClicking(int msDelay, const char* button);
 FFI_EXPORT_MAC void updateClickingDelay(int msDelay);
 FFI_EXPORT_MAC void stopClicking();
+FFI_EXPORT_MAC bool isClicking();
 
 #endif // AUTOCLICKER_MAC_H
