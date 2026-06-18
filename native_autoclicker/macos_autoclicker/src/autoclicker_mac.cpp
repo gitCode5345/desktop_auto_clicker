@@ -78,3 +78,7 @@ FFI_EXPORT_MAC void stopClicking() {
     if (click_thread.joinable())
         click_thread.join();
 }
+
+FFI_EXPORT_MAC bool isClicking() {
+    return is_running;
+}

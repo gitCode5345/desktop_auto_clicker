@@ -77,3 +77,8 @@ FFI_EXPORT_WINDOWS void stopClicking()
     if (click_thread.joinable())
         click_thread.join();
 }
+
+FFI_EXPORT_WINDOWS bool isClicking()
+{
+    return is_running;
+}
