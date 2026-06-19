@@ -18,7 +18,10 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
       this._startClickingUseCase,
       this._stopClickingUseCase,
       this._updateClickingMsUseCase
-    ) : super(ClickerInitialState()) {
+    ) : super(ClickerState()) {
+    on<SelectButtonEvent>((event, emit) {
+      emit(state.copyWith(selectedButton: event.button));
+    });
     on<StartClickingEvent>(_onStartClickingEvent);
     on<StopClickingEvent>(_onStopClickingEvent);
     on<UpdateClickingMsEvent>(_onUpdateClickingMsEvent);
@@ -26,33 +29,37 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
 
   Future<void> _onStartClickingEvent(StartClickingEvent event, Emitter<ClickerState> emit) async {
     try {
-      emit(ClickerLoadingState());
+      emit(state.copyWith(status: ClickerStatus.loading));
       final isRunning = await _startClickingUseCase(event.button);
 
-      if (isRunning) {
-        emit(ClickerRunningState());
-      } else {
-        emit(ClickerErrorState('Failed to start clicking.'));
-      }
+      emit(state.copyWith(
+        status: isRunning? ClickerStatus.running : ClickerStatus.error,
+        errorMessage: isRunning ? null : 'Failed to start clicking.'
+      ));
     }
     catch (e) {
-      emit(ClickerErrorState('Error while starting clicking: $e'));
+      emit(state.copyWith(
+        status: ClickerStatus.error,
+        errorMessage: 'Error $e'
+      ));
     }
   }
 
   Future<void> _onStopClickingEvent(StopClickingEvent event, Emitter<ClickerState> emit) async {
     try {
-      emit(ClickerLoadingState());
+      emit(state.copyWith(status: ClickerStatus.loading));
       final isStopped = await _stopClickingUseCase(NoParams());
 
-      if (isStopped) {
-        emit(ClickerStoppedState());
-      } else {
-        emit(ClickerErrorState('Failed to stop clicking.'));
-      }
+      emit(state.copyWith(
+        status: isStopped? ClickerStatus.running : ClickerStatus.error,
+        errorMessage: isStopped ? null : 'Failed to start clicking.'
+      ));
     }
     catch (e) {
-      emit(ClickerErrorState('Error while stopping clicking: $e'));
+      emit(state.copyWith(
+        status: ClickerStatus.error,
+        errorMessage: 'Error $e'
+      ));
     }
   }
 
@@ -61,7 +68,10 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
       await _updateClickingMsUseCase(event.button);
     }
     catch (e) {
-      emit(ClickerErrorState('Error while updating clicking ms: $e'));
+      emit(state.copyWith(
+        status: ClickerStatus.error,
+        errorMessage: 'Error $e'
+      ));
     }
   }
 }
