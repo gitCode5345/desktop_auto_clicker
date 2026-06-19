@@ -1,25 +1,36 @@
 part of 'clicker_bloc.dart';
 
-sealed class ClickerState extends Equatable {
-  const ClickerState();
+enum ClickerStatus { initial, loading, running, stopped, error }
+
+class ClickerState extends Equatable {
+  final ClickerStatus status;
+  final ButtonClickConfigEntity? selectedButton;
+  final String? errorMessage;
+
+  const ClickerState({
+    this.status = ClickerStatus.initial,
+    this.selectedButton,
+    this.errorMessage,
+  });
+
+  bool get isRunning => status == ClickerStatus.running;
+
+  ClickerState copyWith({
+    ClickerStatus? status,
+    ButtonClickConfigEntity? selectedButton,
+    String? errorMessage
+  }) {
+    return ClickerState(
+      status: status ?? this.status,
+      selectedButton: selectedButton ?? this.selectedButton,
+      errorMessage: errorMessage
+    );
+  }
 
   @override
-  List<Object> get props => [];
-}
-
-final class ClickerInitialState extends ClickerState {}
-
-final class ClickerLoadingState extends ClickerState {}
-
-final class ClickerRunningState extends ClickerState {}
-
-final class ClickerStoppedState extends ClickerState {}
-
-final class ClickerErrorState extends ClickerState {
-  final String message;
-
-  const ClickerErrorState(this.message);
-
-  @override
-  List<Object> get props => [message];
+  List<Object?> get props => [
+    status,
+    selectedButton,
+    errorMessage,
+  ];
 }

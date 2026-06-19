@@ -7,6 +7,17 @@ sealed class ClickerEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+final class SelectButtonEvent extends ClickerEvent {
+  final ButtonClickConfigEntity button;
+
+  const SelectButtonEvent({
+    required this.button
+  });
+
+  @override
+  List<Object?> get props => [button];
+}
+
 final class StartClickingEvent extends ClickerEvent {
   final ButtonClickConfigEntity button;
 

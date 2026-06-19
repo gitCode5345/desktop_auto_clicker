@@ -25,5 +25,5 @@ class ButtonClickConfigEntity extends Equatable{
   }
 
   @override
-  List<Object?> get props => [name, button];
+  List<Object?> get props => [name, button, delayMs];
 }

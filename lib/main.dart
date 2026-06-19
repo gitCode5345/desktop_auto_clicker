@@ -54,41 +54,38 @@ class _MyHomePageState extends State<MyHomePage> {
         child: BlocBuilder<ClickerBloc, ClickerState> (
           builder: (context, state) {
             // TODO: add another states for handling errors and loading
-            final isRunning = state is ClickerRunningState;
-            final isButtonSelected = selectedValue != null;
-
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 DropdownButton(
-                  value: selectedValue,
+                  value: state.selectedButton,
                   items: availableButtons.map((button) {
-                    return DropdownMenuItem(
+                    return DropdownMenuItem<ButtonClickConfigEntity>(
                       value: button,
                       child: Text(button.name),
                     );
                   }).toList(),
                   onChanged: (value) {
-                    setState(() {
-                      selectedValue = value;
-                    });
+                    if (value != null) {
+                      context.read<ClickerBloc>().add(
+                        SelectButtonEvent(button: value)
+                      );
+                    }
                   },
                 ),
                 TextField(
                   controller: _controller,
-                  enabled: selectedValue != null ? true : false,
+                  enabled: state.selectedButton != null && !state.isRunning,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Enter ms',
                   ),
                   onChanged: (value) {
-                    setState(() {
-                      selectedValue = selectedValue?.copyWith(
-                        delayMs: int.tryParse(value) ?? 0);
-                    });
+                    final ms = int.tryParse(value) ?? 0;
+                    final updated = state.selectedButton!.copyWith(delayMs: ms);
                     context.read<ClickerBloc>().add(
                       UpdateClickingMsEvent(
-                        button: selectedValue!
+                        button: updated
                       )
                     );
                   },
@@ -97,18 +94,18 @@ class _MyHomePageState extends State<MyHomePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     ElevatedButton(
-                      onPressed: (!isRunning && isButtonSelected)? () {
+                      onPressed: (!state.isRunning && state.selectedButton != null)? () {
                         int ms = int.parse(_controller.text);
                         context.read<ClickerBloc>().add(
                           StartClickingEvent(
-                            button: selectedValue!.copyWith(delayMs: ms)
+                            button: state.selectedButton!.copyWith(delayMs: ms)
                           )
                         );
                       } : null,
                       child: const Text('Start clicking'),
                     ),
                     ElevatedButton(
-                      onPressed: isRunning ? () {
+                      onPressed: state.isRunning ? () {
                         context.read<ClickerBloc>().add(
                           StopClickingEvent()
                         );
