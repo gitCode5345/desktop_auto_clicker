@@ -131,7 +131,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                       child: const Text('Start clicking'),
                     ),
                     ElevatedButton(
-                      onPressed: state.isBusy ? () {
+                      onPressed: state.isRunning ? () {
                         context.read<ClickerBloc>().add(
                           StopClickingEvent()
                         );
