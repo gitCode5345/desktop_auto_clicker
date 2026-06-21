@@ -1,6 +1,10 @@
+import 'dart:ui';
+
 import 'package:desktop_auto_clicker/configs/injector/injector_conf.dart';
+import 'package:desktop_auto_clicker/src/core/usecases/usecase.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/domain/entities/button_click_config_entity.dart';
 import 'package:desktop_auto_clicker/src/core/constants/available_buttons.dart';
+import 'package:desktop_auto_clicker/src/features/main_page/domain/usecases/stop_clicking.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/presentation/bloc/clicker/clicker_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,10 +46,32 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   final TextEditingController _controller = TextEditingController(text: '10');
-
   ButtonClickConfigEntity? selectedValue;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  Future<AppExitResponse> didRequestAppExit() async {
+    final bloc = context.read<ClickerBloc>();
+
+    if (bloc.state.isRunning) {
+      await getIt<StopClickingUseCase>()(NoParams());
+    }
+
+    return AppExitResponse.exit;
+  }
 
   @override
   Widget build(BuildContext context) {
