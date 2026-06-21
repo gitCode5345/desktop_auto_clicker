@@ -35,7 +35,7 @@ class RunClickerService {
   bool _isInitialized = false;
 
   void _init() {
-    _dylib = ffi.DynamicLibrary.open(_getLibPath());
+    _dylib = ffi.DynamicLibrary.open(_chooseLibPathByOS());
 
     _startClickingFunc = _dylib.lookupFunction<StartClickingFuncNative, StartClickingFuncDart>('startClicking');
     _updateDelayFunc = _dylib.lookupFunction<UpdateDelayFuncNative, UpdateDelayFuncDart>('updateClickingDelay');
@@ -43,16 +43,27 @@ class RunClickerService {
     _isClickingFunc = _dylib.lookupFunction<IsClickingFuncNative, IsClickingFuncDart>('isClicking');
   }
 
-  String _getLibPath() {
+  String _getLibPath(Uri executableUri, String executableLibPath) {
+    final resolvedPath = executableUri.resolve(executableLibPath);
+    final filePath = resolvedPath.toFilePath();
+
+    final file = File(filePath);
+
+    if (!file.existsSync()) {
+      throw FileSystemException('Executable file not exists');
+    }
+
+    return filePath;
+  }
+
+  String _chooseLibPathByOS() {
     final executableUri = Uri.file(Platform.resolvedExecutable);
 
     switch (Platform.operatingSystem) {
       case 'macos':
-        final libUri = executableUri.resolve('../Frameworks/App.framework/Resources/flutter_assets/assets/clicker/libautoclicker.dylib');
-        return libUri.toFilePath();
+        return _getLibPath(executableUri, '../Frameworks/App.framework/Resources/flutter_assets/assets/clicker/libautoclicker.dylib');
       case 'windows':
-        final libUri = executableUri.resolve('data/flutter_assets/assets/clicker/libautoclicker.dll');
-        return libUri.toFilePath();
+        return _getLibPath(executableUri, 'data/flutter_assets/assets/clicker/libautoclicker.dll');
       default:
         throw UnsupportedError('Unsupported platform');
     }
