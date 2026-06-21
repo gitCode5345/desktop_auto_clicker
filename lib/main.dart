@@ -47,18 +47,33 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
-  final TextEditingController _controller = TextEditingController(text: '10');
   ButtonClickConfigEntity? selectedValue;
+
+  final TextEditingController _controller = TextEditingController(text: '10');
+  final FocusNode _focus = FocusNode();
+
+  int validateAndClampMs() {
+    final value = (int.tryParse(_controller.text) ?? 10).clamp(10, 1000);
+    _controller.text = value.toString();
+    return value;
+  }
 
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
+    _focus.addListener(() {
+      if (!_focus.hasFocus) {
+        validateAndClampMs();
+      }
+    });
     super.initState();
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _controller.dispose();
+    _focus.dispose();
     super.dispose();
   }
 
@@ -101,6 +116,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                 ),
                 TextField(
                   controller: _controller,
+                  focusNode: _focus,
                   enabled: state.selectedButton != null && !state.isBusy,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
@@ -121,7 +137,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                   children: <Widget>[
                     ElevatedButton(
                       onPressed: (!state.isBusy && state.selectedButton != null)? () {
-                        int ms = int.parse(_controller.text);
+                        int ms = validateAndClampMs();
                         context.read<ClickerBloc>().add(
                           StartClickingEvent(
                             button: state.selectedButton!.copyWith(delayMs: ms)
