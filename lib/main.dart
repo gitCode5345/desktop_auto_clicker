@@ -47,18 +47,39 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
-  final TextEditingController _controller = TextEditingController(text: '10');
   ButtonClickConfigEntity? selectedValue;
+
+  final TextEditingController _controller = TextEditingController(text: '10');
+  final FocusNode _focus = FocusNode();
 
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
+
+    _focus.addListener(() {
+      if (!_focus.hasFocus) {
+        int value = int.tryParse(_controller.text)?.abs() ?? 0;
+
+        if (value < 10) {
+          value = 10;
+          _controller.text = value.toString();
+        } else if (value > 1000) {
+          value = 1000;
+          _controller.text = value.toString();
+        } else {
+          _controller.text = value.toString();
+        }
+      }
+    });
+
     super.initState();
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _controller.dispose();
+    _focus.dispose();
     super.dispose();
   }
 
@@ -101,7 +122,9 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                 ),
                 TextField(
                   controller: _controller,
+                  focusNode: _focus,
                   enabled: state.selectedButton != null && !state.isBusy,
+                  keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Enter ms',
