@@ -52,7 +52,7 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
 
       emit(state.copyWith(
         status: isStopped? ClickerStatus.stopped : ClickerStatus.error,
-        errorMessage: isStopped ? null : 'Failed to start clicking.'
+        errorMessage: isStopped ? null : 'Failed to stop clicking.'
       ));
     }
     catch (e) {
