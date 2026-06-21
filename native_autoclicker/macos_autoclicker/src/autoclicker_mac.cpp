@@ -12,7 +12,8 @@ std::atomic<int> current_delay(0);
 
 std::thread click_thread;
 
-struct MouseEventTypeMac {
+struct MouseEventTypeMac
+{
     CGMouseButton button;
     CGEventType click_down;
     CGEventType click_up;
@@ -69,7 +70,8 @@ FFI_EXPORT_MAC void updateClickingDelay(int msDelay)
     current_delay = msDelay;
 }
 
-FFI_EXPORT_MAC void stopClicking() {
+FFI_EXPORT_MAC void stopClicking()
+{
     if (!is_running)
         return;
 
@@ -79,6 +81,7 @@ FFI_EXPORT_MAC void stopClicking() {
         click_thread.join();
 }
 
-FFI_EXPORT_MAC bool isClicking() {
+FFI_EXPORT_MAC bool isClicking()
+{
     return is_running;
 }
