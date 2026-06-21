@@ -51,8 +51,8 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
       final isStopped = await _stopClickingUseCase(NoParams());
 
       emit(state.copyWith(
-        status: isStopped? ClickerStatus.running : ClickerStatus.error,
-        errorMessage: isStopped ? null : 'Failed to start clicking.'
+        status: isStopped? ClickerStatus.stopped : ClickerStatus.error,
+        errorMessage: isStopped ? null : 'Failed to stop clicking.'
       ));
     }
     catch (e) {
