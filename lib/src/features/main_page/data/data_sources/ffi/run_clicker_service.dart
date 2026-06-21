@@ -44,20 +44,16 @@ class RunClickerService {
   }
 
   String _getLibPath(Uri executableUri, String executableLibPath) {
-    try {
-      final resolvedPath = executableUri.resolve(executableLibPath);
-      final filePath = resolvedPath.toFilePath();
+    final resolvedPath = executableUri.resolve(executableLibPath);
+    final filePath = resolvedPath.toFilePath();
 
-      final file = File(filePath);
+    final file = File(filePath);
 
-      if (!file.existsSync()) {
-        throw FileSystemException('Executable file not exists');
-      }
-
-      return filePath;
-    } catch (e) {
-      throw Exception('Error: $e');
+    if (!file.existsSync()) {
+      throw FileSystemException('Executable file not exists');
     }
+
+    return filePath;
   }
 
   String _chooseLibPathByOS() {
