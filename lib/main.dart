@@ -46,20 +46,20 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver{
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   final TextEditingController _controller = TextEditingController(text: '10');
   ButtonClickConfigEntity? selectedValue;
 
   @override
   void initState() {
-    super.initState();
     WidgetsBinding.instance.addObserver(this);
+    super.initState();
   }
 
   @override
   void dispose() {
-    super.dispose();
     WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
