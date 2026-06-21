@@ -14,6 +14,8 @@ class ClickerState extends Equatable {
   });
 
   bool get isRunning => status == ClickerStatus.running;
+  bool get isLoading => status == ClickerStatus.loading;
+  bool get isBusy => isRunning || isLoading;
 
   ClickerState copyWith({
     ClickerStatus? status,

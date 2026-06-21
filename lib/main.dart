@@ -101,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                 ),
                 TextField(
                   controller: _controller,
-                  enabled: state.selectedButton != null && !state.isRunning,
+                  enabled: state.selectedButton != null && !state.isBusy,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Enter ms',
@@ -120,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     ElevatedButton(
-                      onPressed: (!state.isRunning && state.selectedButton != null)? () {
+                      onPressed: (!state.isBusy && state.selectedButton != null)? () {
                         int ms = int.parse(_controller.text);
                         context.read<ClickerBloc>().add(
                           StartClickingEvent(
@@ -131,7 +131,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                       child: const Text('Start clicking'),
                     ),
                     ElevatedButton(
-                      onPressed: state.isRunning ? () {
+                      onPressed: state.isBusy ? () {
                         context.read<ClickerBloc>().add(
                           StopClickingEvent()
                         );
