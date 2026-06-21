@@ -52,26 +52,20 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   final TextEditingController _controller = TextEditingController(text: '10');
   final FocusNode _focus = FocusNode();
 
+  int validateAndClampMs() {
+    final value = (int.tryParse(_controller.text) ?? 10).clamp(10, 1000);
+    _controller.text = value.toString();
+    return value;
+  }
+
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
-
     _focus.addListener(() {
       if (!_focus.hasFocus) {
-        int value = int.tryParse(_controller.text)?.abs() ?? 0;
-
-        if (value < 10) {
-          value = 10;
-          _controller.text = value.toString();
-        } else if (value > 1000) {
-          value = 1000;
-          _controller.text = value.toString();
-        } else {
-          _controller.text = value.toString();
-        }
+        validateAndClampMs();
       }
     });
-
     super.initState();
   }
 
@@ -124,7 +118,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                   controller: _controller,
                   focusNode: _focus,
                   enabled: state.selectedButton != null && !state.isBusy,
-                  keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Enter ms',
@@ -144,7 +137,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                   children: <Widget>[
                     ElevatedButton(
                       onPressed: (!state.isBusy && state.selectedButton != null)? () {
-                        int ms = int.parse(_controller.text);
+                        int ms = validateAndClampMs();
                         context.read<ClickerBloc>().add(
                           StartClickingEvent(
                             button: state.selectedButton!.copyWith(delayMs: ms)
