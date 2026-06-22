@@ -2,6 +2,8 @@ import 'package:desktop_auto_clicker/src/core/constants/app_images.dart';
 import 'package:desktop_auto_clicker/src/core/themes/app_color.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/presentation/widgets/info_container_widget.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/presentation/widgets/nav_item_widget.dart';
+import 'package:desktop_auto_clicker/src/features/main_page/presentation/widgets/inter_text_widget.dart';
+import 'package:desktop_auto_clicker/src/features/main_page/presentation/widgets/tappable_container.dart';
 import 'package:flutter/material.dart';
 
 class SidebarWidget extends StatelessWidget {
@@ -49,14 +51,10 @@ class SidebarWidget extends StatelessWidget {
                 )
               ),
               const SizedBox(width: 8),
-              Text(
-                'Click Storm',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontFamily: 'Inter',
-                  color: textColor,
-                  fontWeight: FontWeight.bold
-                ),
+              InterTextWidget(
+                data: 'ClickStorm',
+                fontSize: 18.0,
+                color: textColor,
               )
             ],
           ),
@@ -89,18 +87,15 @@ class SidebarWidget extends StatelessWidget {
               children: [
                 InfoContainerWidget(
                   padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    'Клавіша F6',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontFamily: 'Inter',
-                      color: infoTextColor,
-                    ),
+                  child: InterTextWidget(
+                    data: 'Клавіша F6',
+                    fontSize: 11,
+                    color: infoTextColor,
                   ),
                 ),
                 const SizedBox(height: 16),
-                // TODO: make a container which wrapped with GestureDetector
-                InfoContainerWidget(
+                TappableContainer(
+                  onTap: () => debugPrint('Toggle theme'),
                   padding: EdgeInsets.all(8.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -111,13 +106,10 @@ class SidebarWidget extends StatelessWidget {
                         height: 20,
                       ),
                       const SizedBox(width: 8),
-                      Text(
-                        'Тема',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontFamily: 'Inter',
-                          color: textColor,
-                        ),
+                      InterTextWidget(
+                        data: 'Тема',
+                        fontSize: 13,
+                        color: textColor,
                       )
                     ],
                   ),
