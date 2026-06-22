@@ -3,7 +3,7 @@ import 'package:desktop_auto_clicker/src/core/themes/app_color.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/presentation/widgets/info_container_widget.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/presentation/widgets/nav_item_widget.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/presentation/widgets/inter_text_widget.dart';
-import 'package:desktop_auto_clicker/src/features/main_page/presentation/widgets/tappable_container.dart';
+import 'package:desktop_auto_clicker/src/features/main_page/presentation/widgets/tappable_container_widget.dart';
 import 'package:flutter/material.dart';
 
 class SidebarWidget extends StatelessWidget {
