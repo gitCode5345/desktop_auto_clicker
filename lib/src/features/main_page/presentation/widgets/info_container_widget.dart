@@ -6,9 +6,9 @@ class InfoContainerWidget extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
 
   const InfoContainerWidget({
-    super.key,
     required this.child,
     this.padding,
+    super.key
   });
 
   @override

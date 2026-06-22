@@ -1,4 +1,5 @@
 import 'package:desktop_auto_clicker/src/core/themes/app_color.dart';
+import 'package:desktop_auto_clicker/src/features/main_page/presentation/widgets/inter_text_widget.dart';
 import 'package:flutter/material.dart';
 
 class NavItemWidget extends StatelessWidget {
@@ -7,10 +8,10 @@ class NavItemWidget extends StatelessWidget {
   final bool isActive;
 
   const NavItemWidget({
-    super.key,
     required this.title,
     required this.icon,
-    this.isActive = false
+    this.isActive = false,
+    super.key
   });
 
   @override
@@ -44,14 +45,7 @@ class NavItemWidget extends StatelessWidget {
               height: 20,
             ),
             const SizedBox(width: 8),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 14,
-                fontFamily: 'Inter',
-                color: Colors.white,
-              ),
-            )
+            InterTextWidget(data: title)
           ],
         ),
       ),
