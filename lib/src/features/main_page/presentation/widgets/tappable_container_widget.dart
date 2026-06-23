@@ -1,12 +1,12 @@
 import 'package:desktop_auto_clicker/src/features/main_page/presentation/widgets/info_container_widget.dart';
 import 'package:flutter/material.dart';
 
-class TappableContainer extends StatelessWidget {
+class TappableContainerWidget extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;
   final VoidCallback? onTap;
 
-  const TappableContainer({
+  const TappableContainerWidget({
     required this.child,
     this.padding,
     this.onTap,

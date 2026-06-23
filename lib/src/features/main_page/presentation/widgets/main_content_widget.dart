@@ -17,7 +17,7 @@ class MainContentWidget extends StatefulWidget {
 }
 
 class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindingObserver {
-  final TextEditingController _controller = TextEditingController(text: '10');
+  late final TextEditingController _controller;
   final FocusNode _focus = FocusNode();
 
   int _validateAndClampMs() {
@@ -28,6 +28,9 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
 
   @override
   void initState() {
+    final currentMs = context.read<ClickerBloc>().state.selectedButton?.delayMs ?? 10;
+    _controller = TextEditingController(text: currentMs.toString());
+
     WidgetsBinding.instance.addObserver(this);
     _focus.addListener(() {
       if (!_focus.hasFocus) {
@@ -69,7 +72,7 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
                 value: state.selectedButton,
                 items: availableButtons.map((button) {
                   return DropdownMenuItem<ButtonClickConfigEntity>(
-                    value: button,
+                    value: button.copyWith(delayMs: state.selectedButton?.delayMs),
                     child: Text(button.name),
                   );
                 }).toList(),
@@ -103,7 +106,7 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   ElevatedButton(
-                    onPressed: (!state.isBusy && state.selectedButton != null)? () {
+                    onPressed: (!state.isBusy && state.selectedButton != null) ? () {
                       int ms = _validateAndClampMs();
                       context.read<ClickerBloc>().add(
                         StartClickingEvent(

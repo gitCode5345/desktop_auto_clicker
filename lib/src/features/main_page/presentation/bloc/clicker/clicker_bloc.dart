@@ -65,6 +65,9 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
 
   Future<void> _onUpdateClickingMsEvent(UpdateClickingMsEvent event, Emitter<ClickerState> emit) async {
     try {
+      emit(state.copyWith(
+        selectedButton: event.button
+      ));
       await _updateClickingMsUseCase(event.button);
     }
     catch (e) {

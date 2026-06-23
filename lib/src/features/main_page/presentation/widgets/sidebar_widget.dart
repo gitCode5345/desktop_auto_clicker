@@ -1,4 +1,5 @@
 import 'package:desktop_auto_clicker/src/core/constants/app_images.dart';
+import 'package:desktop_auto_clicker/src/core/constants/dimensions.dart';
 import 'package:desktop_auto_clicker/src/core/themes/app_color.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/presentation/widgets/info_container_widget.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/presentation/widgets/nav_item_widget.dart';
@@ -14,11 +15,10 @@ class SidebarWidget extends StatelessWidget {
     final accentColor = AppColor.accent;
     final containerColor = AppColor.sidebarBg;
     final borderColor = AppColor.border;
-    final textColor = AppColor.textMain;
     final infoTextColor = AppColor.textMuted;
 
     return Container(
-      width: 240,
+      width: sideBarWidth,
       decoration: BoxDecoration(
         color: containerColor,
         border: Border(
@@ -54,7 +54,6 @@ class SidebarWidget extends StatelessWidget {
               InterTextWidget(
                 data: 'ClickStorm',
                 fontSize: 18.0,
-                color: textColor,
               )
             ],
           ),
@@ -63,6 +62,7 @@ class SidebarWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // TODO: make enum for nav items
                 NavItemWidget(
                   title: 'Головна',
                   icon: AppImages.home,
@@ -94,7 +94,7 @@ class SidebarWidget extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                TappableContainer(
+                TappableContainerWidget(
                   onTap: () => debugPrint('Toggle theme'),
                   padding: EdgeInsets.all(8.0),
                   child: Row(
@@ -109,7 +109,6 @@ class SidebarWidget extends StatelessWidget {
                       InterTextWidget(
                         data: 'Тема',
                         fontSize: 13,
-                        color: textColor,
                       )
                     ],
                   ),
