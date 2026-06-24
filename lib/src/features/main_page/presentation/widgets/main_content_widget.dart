@@ -136,6 +136,7 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
                             const SizedBox(height: 8.0),
                             DropdownContainer<Button>(
                               value: state.selectedButton?.button,
+                              enabled: state.isRunning? false : true,
                               items: availableButtons.map((b) => b.button).toList(),
                               labelBuilder: (btn) => availableButtons.firstWhere((b) => b.button == btn).name,
                               onChanged: (btn) {
@@ -239,15 +240,15 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
                                 activeColor: bgColor,
                                 inactiveColor: bgColor,
                                 thumbColor: AppColor.accent,
-                                onChanged: (value) {
-                                  _sliderValue = value;
+                                onChanged: (state.selectedButton != null && !state.isBusy)? (value) {
+                                  setState(() => _sliderValue = value);
                                   final ms = value.toInt().clamp(10, 1000);
                                   _controllerMs.text = ms.toString();
                                   final updated = state.selectedButton!.copyWith(delayMs: ms);
                                   context.read<ClickerBloc>().add(
                                     UpdateClickingMsEvent(button: updated),
                                   );
-                                },
+                                } : null
                               ),
                             ),
                             const SizedBox(height: 20.0),
