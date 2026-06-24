@@ -5,6 +5,7 @@ class InterTextWidget extends StatelessWidget {
   final String data;
   final double fontSize;
   final FontWeight fontWeight;
+  final double letterSpacing;
   final Color color;
 
   const InterTextWidget({
@@ -12,6 +13,7 @@ class InterTextWidget extends StatelessWidget {
     this.fontSize = 14.0,
     this.color = AppColor.textMain,
     this.fontWeight = FontWeight.bold,
+    this.letterSpacing = 0.0,
     super.key
   });
 
@@ -23,6 +25,7 @@ class InterTextWidget extends StatelessWidget {
         fontFamily: 'Inter',
         fontSize: fontSize,
         color: color,
+        letterSpacing: letterSpacing,
         fontWeight: fontWeight
       ),
     );
