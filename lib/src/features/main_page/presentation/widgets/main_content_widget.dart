@@ -25,26 +25,31 @@ class MainContentWidget extends StatefulWidget {
 }
 
 class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindingObserver {
-  late final TextEditingController _controller;
-  final FocusNode _focus = FocusNode();
+  late final TextEditingController _controllerMs;
+  final FocusNode _focusMs = FocusNode();
+
+  late final TextEditingController _delayStartController;
+  final FocusNode _delayStartFocus = FocusNode();
+
   double _sliderValue = 10;
   int _delayStartSeconds = 0;
   bool _delayStartIsChecked = false;
 
   int _validateAndClampMs() {
-    final value = (int.tryParse(_controller.text) ?? 10).clamp(10, 1000);
-    _controller.text = value.toString();
+    final value = (int.tryParse(_controllerMs.text) ?? 10).clamp(10, 1000);
+    _controllerMs.text = value.toString();
     return value;
   }
 
   @override
   void initState() {
     final currentMs = context.read<ClickerBloc>().state.selectedButton?.delayMs ?? 10;
-    _controller = TextEditingController(text: currentMs.toString());
+    _controllerMs = TextEditingController(text: currentMs.toString());
+    _delayStartController = TextEditingController(text: '0');
 
     WidgetsBinding.instance.addObserver(this);
-    _focus.addListener(() {
-      if (!_focus.hasFocus) {
+    _focusMs.addListener(() {
+      if (!_focusMs.hasFocus) {
         _validateAndClampMs();
       }
     });
@@ -54,8 +59,11 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _controller.dispose();
-    _focus.dispose();
+
+    _controllerMs.dispose();
+    _delayStartController.dispose();
+
+    _focusMs.dispose();
     super.dispose();
   }
 
@@ -178,8 +186,8 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
                                     children: [
                                       Expanded(
                                         child: TextField(
-                                          controller: _controller,
-                                          focusNode: _focus,
+                                          controller: _controllerMs,
+                                          focusNode: _focusMs,
                                           enabled: state.selectedButton != null && !state.isBusy,
                                           textAlign: TextAlign.right,
                                           keyboardType: TextInputType.number,
@@ -234,7 +242,7 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
                                 onChanged: (value) {
                                   _sliderValue = value;
                                   final ms = value.toInt().clamp(10, 1000);
-                                  _controller.text = ms.toString();
+                                  _controllerMs.text = ms.toString();
                                   final updated = state.selectedButton!.copyWith(delayMs: ms);
                                   context.read<ClickerBloc>().add(
                                     UpdateClickingMsEvent(button: updated),
@@ -282,8 +290,8 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
                                       children: [
                                         Expanded(
                                           child: TextField(
-                                            controller: _controller,
-                                            focusNode: _focus,
+                                            controller: _delayStartController,
+                                            focusNode: _delayStartFocus,
                                             enabled: state.selectedButton != null && !state.isBusy,
                                             textAlign: TextAlign.right,
                                             keyboardType: TextInputType.number,
