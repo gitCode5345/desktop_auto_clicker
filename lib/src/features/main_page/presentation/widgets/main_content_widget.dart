@@ -64,6 +64,7 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
     _delayStartController.dispose();
 
     _focusMs.dispose();
+    _delayStartFocus.dispose();
     super.dispose();
   }
 
@@ -136,7 +137,7 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
                             const SizedBox(height: 8.0),
                             DropdownContainer<Button>(
                               value: state.selectedButton?.button,
-                              enabled: state.isRunning? false : true,
+                              enabled: !state.isBusy,
                               items: availableButtons.map((b) => b.button).toList(),
                               labelBuilder: (btn) => availableButtons.firstWhere((b) => b.button == btn).name,
                               onChanged: (btn) {
@@ -189,7 +190,7 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
                                         child: TextField(
                                           controller: _controllerMs,
                                           focusNode: _focusMs,
-                                          enabled: state.selectedButton != null && !state.isBusy,
+                                          enabled: !state.isRunning,
                                           textAlign: TextAlign.right,
                                           keyboardType: TextInputType.number,
                                           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
