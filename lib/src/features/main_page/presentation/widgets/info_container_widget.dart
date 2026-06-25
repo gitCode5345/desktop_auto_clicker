@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 
 class InfoContainerWidget extends StatelessWidget {
   final Widget child;
+  final double? width;
+  final double? height;
   final EdgeInsetsGeometry? padding;
 
   const InfoContainerWidget({
     required this.child,
     this.padding,
+    this.width = double.infinity,
+    this.height,
     super.key
   });
 
@@ -16,7 +20,8 @@ class InfoContainerWidget extends StatelessWidget {
     final containerColor = AppColor.inputBg;
 
     return Container(
-      width: double.infinity,
+      width: width,
+      height: height,
       decoration: BoxDecoration(
         color: containerColor,
         border: Border.all(
