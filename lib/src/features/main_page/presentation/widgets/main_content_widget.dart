@@ -112,13 +112,15 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
                         return Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(child: _buildLeftPart(
-                              cardBgColor,
-                              state,
-                              context,
-                              bgColor,
-                              textColor
-                            )),
+                            Expanded(
+                              child: _buildLeftPart(
+                                cardBgColor,
+                                state,
+                                context,
+                                bgColor,
+                                textColor
+                              )
+                            ),
                             SizedBox(width: 30.0),
                             SizedBox(
                               width: 320.0,
