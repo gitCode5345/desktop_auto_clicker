@@ -188,7 +188,6 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
             height: 60.0,
             padding: const EdgeInsets.all(8.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: List.generate(18, (index) => Expanded(
                 child: Container(
@@ -317,7 +316,7 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
                           child: TextField(
                             controller: _controllerMs,
                             focusNode: _focusMs,
-                            enabled: !state.isRunning,
+                            enabled: !state.isBusy,
                             textAlign: TextAlign.right,
                             keyboardType: TextInputType.number,
                             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
