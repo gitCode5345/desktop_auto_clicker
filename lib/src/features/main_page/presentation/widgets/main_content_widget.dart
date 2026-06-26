@@ -171,7 +171,7 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
           ),
           const SizedBox(height: 32.0),
           TweenAnimationBuilder(
-            tween: Tween<double>(begin: 0.0, end: state.cpsCount),
+            tween: Tween<double>(begin: 0.0, end: state.cps),
             duration: const Duration(seconds: 2),
             curve: Curves.easeInOut,
             builder: (context, value, child) {

@@ -30,21 +30,17 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
   Future<void> _onStartClickingEvent(StartClickingEvent event, Emitter<ClickerState> emit) async {
     try {
       emit(state.copyWith(status: ClickerStatus.loading));
-      final isRunning = await _startClickingUseCase(event.button);
 
-      int delay = event.button.delayMs!;
-      double calculatedCps = 1000 / delay;
+      final isRunning = await _startClickingUseCase(event.button);
 
       emit(state.copyWith(
         status: isRunning? ClickerStatus.running : ClickerStatus.error,
-        cpsCount: calculatedCps,
         errorMessage: isRunning ? null : 'Failed to start clicking.'
       ));
     }
     catch (e) {
       emit(state.copyWith(
         status: ClickerStatus.error,
-        cpsCount: 0.0,
         errorMessage: 'Error $e'
       ));
     }
@@ -53,18 +49,17 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
   Future<void> _onStopClickingEvent(StopClickingEvent event, Emitter<ClickerState> emit) async {
     try {
       emit(state.copyWith(status: ClickerStatus.loading));
+
       final isStopped = await _stopClickingUseCase(NoParams());
 
       emit(state.copyWith(
         status: isStopped? ClickerStatus.stopped : ClickerStatus.error,
-        cpsCount: 0.0,
         errorMessage: isStopped ? null : 'Failed to stop clicking.'
       ));
     }
     catch (e) {
       emit(state.copyWith(
         status: ClickerStatus.error,
-        cpsCount: 0.0,
         errorMessage: 'Error $e'
       ));
     }
@@ -72,14 +67,8 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
 
   Future<void> _onUpdateClickingMsEvent(UpdateClickingMsEvent event, Emitter<ClickerState> emit) async {
     try {
-      int delay = event.button.delayMs!;
-
-      double oldCps = state.cpsCount;
-      double calculatedCps = 1000 / delay;
-
       emit(state.copyWith(
         selectedButton: event.button,
-        cpsCount: !state.isBusy? oldCps : calculatedCps
       ));
 
       await _updateClickingMsUseCase(event.button);
@@ -87,7 +76,6 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
     catch (e) {
       emit(state.copyWith(
         status: ClickerStatus.error,
-        cpsCount: 0.0,
         errorMessage: 'Error $e'
       ));
     }
