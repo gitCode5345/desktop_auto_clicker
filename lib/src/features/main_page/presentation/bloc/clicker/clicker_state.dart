@@ -17,6 +17,13 @@ class ClickerState extends Equatable {
   bool get isLoading => status == ClickerStatus.loading;
   bool get isBusy => isRunning || isLoading;
 
+  double get cps {
+    if (selectedButton == null || !isBusy) {
+      return 0.0;
+    }
+    return 1000 / selectedButton!.delayMs!;
+  }
+
   ClickerState copyWith({
     ClickerStatus? status,
     ButtonClickConfigEntity? selectedButton,

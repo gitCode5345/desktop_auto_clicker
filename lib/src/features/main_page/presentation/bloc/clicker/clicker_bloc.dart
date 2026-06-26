@@ -29,7 +29,11 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
 
   Future<void> _onStartClickingEvent(StartClickingEvent event, Emitter<ClickerState> emit) async {
     try {
-      emit(state.copyWith(status: ClickerStatus.loading));
+      emit(state.copyWith(
+        status: ClickerStatus.loading,
+        selectedButton: event.button
+      ));
+
       final isRunning = await _startClickingUseCase(event.button);
 
       emit(state.copyWith(
@@ -48,6 +52,7 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
   Future<void> _onStopClickingEvent(StopClickingEvent event, Emitter<ClickerState> emit) async {
     try {
       emit(state.copyWith(status: ClickerStatus.loading));
+
       final isStopped = await _stopClickingUseCase(NoParams());
 
       emit(state.copyWith(
@@ -66,8 +71,9 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
   Future<void> _onUpdateClickingMsEvent(UpdateClickingMsEvent event, Emitter<ClickerState> emit) async {
     try {
       emit(state.copyWith(
-        selectedButton: event.button
+        selectedButton: event.button,
       ));
+
       await _updateClickingMsUseCase(event.button);
     }
     catch (e) {
