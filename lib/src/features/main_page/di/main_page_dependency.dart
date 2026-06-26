@@ -1,4 +1,4 @@
-import 'package:desktop_auto_clicker/configs/injector/injector_conf.dart';
+import 'package:desktop_auto_clicker/src/configs/injector/injector_conf.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/data/data_sources/ffi/run_clicker_service.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/data/repository/clicker_repository_impl.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/domain/usecases/start_clicking.dart';

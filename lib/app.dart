@@ -1,5 +1,5 @@
 import 'package:desktop_auto_clicker/app_view.dart';
-import 'package:desktop_auto_clicker/configs/injector/injector_conf.dart';
+import 'package:desktop_auto_clicker/src/configs/injector/injector_conf.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/presentation/bloc/clicker/clicker_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
