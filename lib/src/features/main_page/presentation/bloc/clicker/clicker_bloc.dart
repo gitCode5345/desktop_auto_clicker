@@ -32,14 +32,19 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
       emit(state.copyWith(status: ClickerStatus.loading));
       final isRunning = await _startClickingUseCase(event.button);
 
+      int delay = event.button.delayMs!;
+      double calculatedCps = 1000 / delay;
+
       emit(state.copyWith(
         status: isRunning? ClickerStatus.running : ClickerStatus.error,
+        cpsCount: calculatedCps,
         errorMessage: isRunning ? null : 'Failed to start clicking.'
       ));
     }
     catch (e) {
       emit(state.copyWith(
         status: ClickerStatus.error,
+        cpsCount: 0.0,
         errorMessage: 'Error $e'
       ));
     }
@@ -52,12 +57,14 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
 
       emit(state.copyWith(
         status: isStopped? ClickerStatus.stopped : ClickerStatus.error,
+        cpsCount: 0.0,
         errorMessage: isStopped ? null : 'Failed to stop clicking.'
       ));
     }
     catch (e) {
       emit(state.copyWith(
         status: ClickerStatus.error,
+        cpsCount: 0.0,
         errorMessage: 'Error $e'
       ));
     }
@@ -65,14 +72,22 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
 
   Future<void> _onUpdateClickingMsEvent(UpdateClickingMsEvent event, Emitter<ClickerState> emit) async {
     try {
+      int delay = event.button.delayMs!;
+
+      double oldCps = state.cpsCount;
+      double calculatedCps = 1000 / delay;
+
       emit(state.copyWith(
-        selectedButton: event.button
+        selectedButton: event.button,
+        cpsCount: !state.isBusy? oldCps : calculatedCps
       ));
+
       await _updateClickingMsUseCase(event.button);
     }
     catch (e) {
       emit(state.copyWith(
         status: ClickerStatus.error,
+        cpsCount: 0.0,
         errorMessage: 'Error $e'
       ));
     }

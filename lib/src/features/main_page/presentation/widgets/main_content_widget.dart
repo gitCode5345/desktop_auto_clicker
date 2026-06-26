@@ -124,7 +124,7 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
                             SizedBox(width: 30.0),
                             SizedBox(
                               width: 320.0,
-                              child: _buildProgressCardWidget(cardBgColor)
+                              child: _buildProgressCardWidget(cardBgColor, state)
                             ),
                           ],
                         );
@@ -139,7 +139,7 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
                               textColor
                             ),
                             SizedBox(height: 30.0),
-                            _buildProgressCardWidget(cardBgColor)
+                            _buildProgressCardWidget(cardBgColor, state)
                           ],
                         );
                       }
@@ -154,7 +154,7 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
     );
   }
 
-  CardWidget _buildProgressCardWidget(Color cardBgColor) {
+  CardWidget _buildProgressCardWidget(Color cardBgColor, ClickerState state) {
     return CardWidget(
       color: cardBgColor,
       padding: const EdgeInsets.symmetric(
@@ -170,11 +170,18 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
             fontWeight: FontWeight.w700
           ),
           const SizedBox(height: 32.0),
-          InterTextWidget(
-            data: '0.0',
-            color: AppColor.accent,
-            fontSize: 64.0,
-            fontWeight: FontWeight.w900
+          TweenAnimationBuilder(
+            tween: Tween<double>(begin: 0.0, end: state.cpsCount),
+            duration: const Duration(seconds: 2),
+            curve: Curves.easeInOut,
+            builder: (context, value, child) {
+              return InterTextWidget(
+                data: value.toStringAsFixed(1),
+                color: AppColor.accent,
+                fontSize: 64.0,
+                fontWeight: FontWeight.w900
+              );
+            },
           ),
           const SizedBox(height: 12.0),
           InterTextWidget(

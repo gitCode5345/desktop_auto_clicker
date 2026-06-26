@@ -4,12 +4,14 @@ enum ClickerStatus { initial, loading, running, stopped, error }
 
 class ClickerState extends Equatable {
   final ClickerStatus status;
+  final double cpsCount;
   final ButtonClickConfigEntity? selectedButton;
   final String? errorMessage;
 
   const ClickerState({
     this.status = ClickerStatus.initial,
     this.selectedButton,
+    this.cpsCount = 0.0,
     this.errorMessage,
   });
 
@@ -20,11 +22,13 @@ class ClickerState extends Equatable {
   ClickerState copyWith({
     ClickerStatus? status,
     ButtonClickConfigEntity? selectedButton,
+    double? cpsCount,
     String? errorMessage
   }) {
     return ClickerState(
       status: status ?? this.status,
       selectedButton: selectedButton ?? this.selectedButton,
+      cpsCount: cpsCount ?? this.cpsCount,
       errorMessage: errorMessage
     );
   }
@@ -33,6 +37,7 @@ class ClickerState extends Equatable {
   List<Object?> get props => [
     status,
     selectedButton,
+    cpsCount,
     errorMessage,
   ];
 }
