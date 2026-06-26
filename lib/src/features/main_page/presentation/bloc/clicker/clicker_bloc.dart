@@ -29,7 +29,10 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
 
   Future<void> _onStartClickingEvent(StartClickingEvent event, Emitter<ClickerState> emit) async {
     try {
-      emit(state.copyWith(status: ClickerStatus.loading));
+      emit(state.copyWith(
+        status: ClickerStatus.loading,
+        selectedButton: event.button
+      ));
 
       final isRunning = await _startClickingUseCase(event.button);
 
