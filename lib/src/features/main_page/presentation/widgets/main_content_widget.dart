@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:desktop_auto_clicker/configs/injector/injector_conf.dart';
+import 'package:desktop_auto_clicker/src/configs/injector/injector_conf.dart';
 import 'package:desktop_auto_clicker/src/core/constants/available_buttons.dart';
 import 'package:desktop_auto_clicker/src/core/constants/dimensions.dart';
 import 'package:desktop_auto_clicker/src/core/enums/button.dart';
