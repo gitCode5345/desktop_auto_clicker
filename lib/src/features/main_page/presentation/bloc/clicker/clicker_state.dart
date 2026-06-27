@@ -21,7 +21,18 @@ class ClickerState extends Equatable {
     if (selectedButton == null || !isBusy) {
       return 0.0;
     }
-    return 1000 / selectedButton!.delayMs!;
+
+    return maxSliderValue / selectedButton!.delayMs!;
+  }
+
+  double get barHeight {
+    if (selectedButton == null || !isBusy) {
+      return minBarHeight;
+    }
+
+    int delayMs = selectedButton!.delayMs!;
+
+    return maxBarHeight - ((delayMs - minSliderValue) * (maxBarHeight - minBarHeight) / (maxSliderValue - minSliderValue));
   }
 
   ClickerState copyWith({

@@ -1,4 +1,6 @@
+import 'package:desktop_auto_clicker/src/core/constants/values.dart';
 import 'package:desktop_auto_clicker/src/core/usecases/usecase.dart';
+import 'package:desktop_auto_clicker/src/core/constants/dimensions.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/domain/usecases/start_clicking.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/domain/usecases/stop_clicking.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/domain/usecases/update_clicking_ms.dart';

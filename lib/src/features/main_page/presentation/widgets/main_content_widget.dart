@@ -9,8 +9,8 @@ import 'package:desktop_auto_clicker/src/core/usecases/usecase.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/domain/usecases/stop_clicking.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/presentation/bloc/clicker/clicker_bloc.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/presentation/widgets/card_widget.dart';
+import 'package:desktop_auto_clicker/src/features/main_page/presentation/widgets/cps_graph_widget.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/presentation/widgets/dropdown_container.dart';
-import 'package:desktop_auto_clicker/src/features/main_page/presentation/widgets/info_container_widget.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/presentation/widgets/inter_text_widget.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/presentation/widgets/start_button_widget.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/presentation/widgets/stop_button_widget.dart';
@@ -191,24 +191,9 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
             letterSpacing: 1.0
           ),
           const SizedBox(height: 20.0),
-          InfoContainerWidget(
-            height: 60.0,
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: List.generate(18, (index) => Expanded(
-                child: Container(
-                  height: 10.0,
-                  decoration: BoxDecoration(
-                    color: AppColor.accent.withAlpha(76),
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(2.0)
-                    )
-                  ),
-                  margin: EdgeInsets.symmetric(horizontal: 2.0),
-                ),
-              )),
-            ),
+          CpsGraphWidget(
+            isRunning: state.isRunning,
+            targetBarHeight: state.barHeight
           ),
           const SizedBox(height: 16.0),
           Row(
