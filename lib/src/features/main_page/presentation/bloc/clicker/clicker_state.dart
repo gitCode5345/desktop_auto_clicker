@@ -22,7 +22,7 @@ class ClickerState extends Equatable {
       return 0.0;
     }
 
-    return maxSliderValue / selectedButton!.delayMs!;
+    return msPerSecond / selectedButton!.delayMs!;
   }
 
   double get barHeight {
