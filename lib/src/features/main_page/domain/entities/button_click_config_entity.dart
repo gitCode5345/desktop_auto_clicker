@@ -1,7 +1,7 @@
 import 'package:desktop_auto_clicker/src/core/enums/button.dart';
 import 'package:equatable/equatable.dart';
 
-class ButtonClickConfigEntity extends Equatable{
+class ButtonClickConfigEntity extends Equatable {
   final String name;
   final Button button;
   final int? delayMs;

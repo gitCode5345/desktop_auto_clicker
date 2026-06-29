@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'dart:async';
 
 import 'package:desktop_auto_clicker/src/configs/injector/injector_conf.dart';
 import 'package:desktop_auto_clicker/src/core/constants/available_buttons.dart';
@@ -33,6 +34,9 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
   final FocusNode _delayStartFocus = FocusNode();
 
   double _sliderValue = 10;
+
+  int _delayStartInputValue = 0;
+  bool _isDelayCountingDown = false;
   int _delayStartSeconds = 0;
   bool _delayStartIsChecked = false;
 
@@ -40,6 +44,52 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
     final value = (int.tryParse(_controllerMs.text) ?? 10).clamp(10, 1000);
     _controllerMs.text = value.toString();
     return value;
+  }
+
+  int _validateAndClampDelayStart() {
+    final value = (int.tryParse(_delayStartController.text) ?? 0).clamp(0, 60);
+    _delayStartController.text = value.toString();
+    _delayStartInputValue = value;
+    return value;
+  }
+
+  void _startCountDown() {
+    setState(() {
+      _isDelayCountingDown = true;
+      _delayStartSeconds = _delayStartInputValue;
+    });
+
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      if (_delayStartSeconds > 0) {
+        setState(() {
+          _delayStartSeconds--;
+        });
+      } else {
+        timer.cancel();
+        setState(() {
+          _isDelayCountingDown = false;
+        });
+        final bloc = context.read<ClickerBloc>();
+        if (bloc.state.selectedButton != null) {
+          int ms = _validateAndClampMs();
+          bloc.add(
+            StartClickingEvent(
+              button: bloc.state.selectedButton!.copyWith(delayMs: ms)
+            )
+          );
+        }
+      }
+    });
+  }
+
+  String _getActivityText(ClickerState state) {
+    if (state.isRunning) {
+      return 'Статус: активний';
+    } else if (_isDelayCountingDown) {
+      return 'Запуск через $_delayStartSeconds секунд';
+    } else {
+      return 'Статус: очікування';
+    }
   }
 
   @override
@@ -52,6 +102,12 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
     _focusMs.addListener(() {
       if (!_focusMs.hasFocus) {
         _validateAndClampMs();
+      }
+    });
+
+    _delayStartFocus.addListener(() {
+      if (!_delayStartFocus.hasFocus) {
+        _validateAndClampDelayStart();
       }
     });
 
@@ -209,7 +265,7 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
               ),
               const SizedBox(width: 8.0),
               InterTextWidget(
-                data: 'Статус: очікування',
+                data: _getActivityText(state),
                 color: AppColor.textMuted,
                 fontSize: 13.0
               )
@@ -308,9 +364,8 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
                           child: TextField(
                             controller: _controllerMs,
                             focusNode: _focusMs,
-                            enabled: !state.isBusy,
+                            enabled: state.selectedButton != null && !state.isBusy,
                             textAlign: TextAlign.right,
-                            keyboardType: TextInputType.number,
                             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                             style: const TextStyle(
                               color: AppColor.textMain,
@@ -384,11 +439,15 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
                       children: [
                         Checkbox(
                           value: _delayStartIsChecked,
-                          onChanged: (value) {
+                          onChanged: (state.selectedButton != null && !state.isBusy) ? (value) {
                             setState(() {
                               _delayStartIsChecked = value!;
+                              if (!_delayStartIsChecked) {
+                                _delayStartInputValue = 0;
+                                _delayStartController.text = '0';
+                              }
                             });
-                          }
+                          } : null,
                         ),
                         InterTextWidget(
                           data: 'Відкладений старт'
@@ -412,9 +471,8 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
                             child: TextField(
                               controller: _delayStartController,
                               focusNode: _delayStartFocus,
-                              enabled: state.selectedButton != null && !state.isBusy,
+                              enabled: state.selectedButton != null && !state.isBusy && _delayStartIsChecked,
                               textAlign: TextAlign.right,
-                              keyboardType: TextInputType.number,
                               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                               style: const TextStyle(
                                 color: AppColor.textMain,
@@ -428,9 +486,7 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
                               ),
                               onChanged: (value) {
                                 setState(() {
-                                  // TODO: added event if start is delayed
-                                  int seconds = int.tryParse(value) ?? 0;
-                                  _delayStartSeconds = seconds.clamp(0, 60);
+                                  _delayStartInputValue = (int.tryParse(value) ?? 0).clamp(0, 60);
                                 });
                               },
                             ),
@@ -456,8 +512,10 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             StartButtonWidget(
-              enabled: state.selectedButton != null && !state.isBusy,
-              onTap: () {
+              enabled: state.selectedButton != null && !state.isBusy && !_isDelayCountingDown,
+              onTap: (_delayStartIsChecked && _delayStartInputValue > 0) ? () {
+                _startCountDown();
+              } : () {
                 int ms = _validateAndClampMs();
                 context.read<ClickerBloc>().add(
                   StartClickingEvent(
@@ -471,7 +529,7 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
               ),
               child: Center(
                 child: InterTextWidget(
-                  data: 'Start clicking',
+                  data: _isDelayCountingDown ? '$_delayStartSeconds sec' : 'Cтарт',
                   fontSize: 16.0,
                 ),
               )
