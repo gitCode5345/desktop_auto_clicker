@@ -529,7 +529,7 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
               ),
               child: Center(
                 child: InterTextWidget(
-                  data: _isDelayCountingDown ? '$_delayStartSeconds sec' : 'Cтарт',
+                  data: _isDelayCountingDown ? 'Залишилось $_delayStartSeconds' : 'Cтарт',
                   fontSize: 16.0,
                 ),
               )
