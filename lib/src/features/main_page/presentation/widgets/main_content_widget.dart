@@ -92,6 +92,16 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
     }
   }
 
+  Color _getIndicatorColor(ClickerState state) {
+    if (state.isRunning) {
+      return AppColor.success;
+    } else if (_isDelayCountingDown) {
+      return AppColor.waiting;
+    } else {
+      return AppColor.textMuted;
+    }
+  }
+
   @override
   void initState() {
     final currentMs = context.read<ClickerBloc>().state.selectedButton?.delayMs ?? 10;
@@ -259,8 +269,15 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
                 width: 8.0,
                 height: 8.0,
                 decoration: BoxDecoration(
-                  color: AppColor.textMuted,
-                  shape: BoxShape.circle
+                  color: _getIndicatorColor(state),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: _getIndicatorColor(state).withAlpha(153),
+                      blurRadius: 4.0,
+                      spreadRadius: 1.0,
+                    )
+                  ]
                 ),
               ),
               const SizedBox(width: 8.0),
