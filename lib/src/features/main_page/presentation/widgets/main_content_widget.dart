@@ -71,6 +71,35 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
     }
   }
 
+  void _stopClicker(ClickerState state, BuildContext context) {
+    if (state.isRunning) {
+      context.read<ClickerBloc>().add(
+        StopClickingEvent()
+      );
+    } else if (state.isCountdown) {
+      context.read<ClickerBloc>().add(
+        CancelDelayedStartEvent()
+      );
+    }
+  }
+
+  void _startClicker(BuildContext context, ClickerState state) {
+    if (_delayStartIsChecked && _delayStartInputValue > 0) {
+      context.read<ClickerBloc>().add(
+        StartClickingEvent(
+          button: state.selectedButton!.copyWith(delayMs: _validateAndClampMs()),
+          delayedStartSeconds: _validateAndClampDelayStart()
+        )
+      );
+    } else {
+      context.read<ClickerBloc>().add(
+        StartClickingEvent(
+          button: state.selectedButton!.copyWith(delayMs: _validateAndClampMs())
+        )
+      );
+    }
+  }
+
   @override
   void initState() {
     final currentMs = context.read<ClickerBloc>().state.selectedButton?.delayMs ?? 10;
@@ -494,62 +523,56 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
           ),
         ),
         const SizedBox(height: 24.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            StartButtonWidget(
-              enabled: state.selectedButton != null && !state.isBusy,
-              onTap: (_delayStartIsChecked && _delayStartInputValue > 0) ? () {
-                context.read<ClickerBloc>().add(
-                  StartClickingEvent(
-                    button: state.selectedButton!.copyWith(delayMs: _validateAndClampMs()),
-                    delayedStartSeconds: _validateAndClampDelayStart()
-                  )
-                );
-              } : () {
-                context.read<ClickerBloc>().add(
-                  StartClickingEvent(
-                    button: state.selectedButton!.copyWith(delayMs: _validateAndClampMs())
-                  )
-                );
-              },
-              padding: const EdgeInsets.symmetric(
-                vertical: 12.0,
-                horizontal: 24.0
-              ),
-              child: Center(
-                child: InterTextWidget(
-                  data: state.isCountdown ? 'Залишилось ${state.delayedStartSeconds}' : 'Cтарт',
-                  fontSize: 16.0,
+        CallbackShortcuts(
+          bindings: <ShortcutActivator, VoidCallback>{
+            const SingleActivator(LogicalKeyboardKey.f6): () {
+              if (state.selectedButton != null && !state.isBusy) {
+                _startClicker(context, state);
+              } else {
+                _stopClicker(state, context);
+              }
+            },
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              StartButtonWidget(
+                enabled: state.selectedButton != null && !state.isBusy,
+                onTap: () => _startClicker(context, state),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12.0,
+                  horizontal: 24.0
                 ),
-              )
-            ),
-            const SizedBox(width: 16.0),
-            StopButtonWidget(
-              enabled: state.isStoppable,
-              onTap: state.isRunning ? () {
-                context.read<ClickerBloc>().add(
-                  StopClickingEvent()
-                );
-              } : () {
-                context.read<ClickerBloc>().add(
-                  CancelDelayedStartEvent()
-                );
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.stop, size: 16.0, color: textColor),
-                  const SizedBox(width: 10.0),
-                  InterTextWidget(
-                    data: 'Стоп',
-                    color: textColor,
-                    fontSize: 15.0,
+                child: Center(
+                  child: InterTextWidget(
+                    data: state.isCountdown ? 'Залишилось ${state.delayedStartSeconds}' : 'Cтарт',
+                    fontSize: 16.0,
                   ),
-                ],
+                )
               ),
-            ),
-          ]
+              const SizedBox(width: 16.0),
+              StopButtonWidget(
+                enabled: state.isStoppable,
+                onTap: () => _stopClicker(state, context),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12.0,
+                  horizontal: 24.0
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.stop, size: 16.0, color: textColor),
+                    const SizedBox(width: 10.0),
+                    InterTextWidget(
+                      data: 'Стоп',
+                      color: textColor,
+                      fontSize: 15.0,
+                    ),
+                  ],
+                ),
+              ),
+            ]
+          ),
         ),
       ],
     );
