@@ -145,6 +145,9 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
   }
 
   Future<void> _onCancelDelayedStartEvent(CancelDelayedStartEvent event, Emitter<ClickerState> emit) async {
+    _countdownTimer?.cancel();
+    _countdownTimer = null;
+
     if (_countdownCompleter?.isCompleted == false) {
       _countdownCompleter?.complete(false);
     }
