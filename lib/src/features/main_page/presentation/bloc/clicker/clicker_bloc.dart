@@ -34,6 +34,9 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
     on<StopClickingEvent>(_onStopClickingEvent);
     on<UpdateClickingMsEvent>(_onUpdateClickingMsEvent);
     on<CancelDelayedStartEvent>(_onCancelDelayedStartEvent);
+    on<UpdateDelayedStartSecondsEvent>((event, emit) {
+      emit(state.copyWith(delayedStartSeconds: event.delayedStartSeconds));
+    });
   }
 
   bool _runCountdown(int seconds, Emitter<ClickerState> emit) {

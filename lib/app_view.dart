@@ -33,7 +33,10 @@ class _AppViewState extends State<AppView> {
         final state = bloc.state;
 
         if (state.selectedButton != null && !state.isBusy) {
-          bloc.add(StartClickingEvent(button: state.selectedButton!));
+          bloc.add(StartClickingEvent(
+            button: state.selectedButton!,
+            delayedStartSeconds: state.delayedStartSeconds ?? 0
+          ));
         } else if (state.isStoppable) {
           bloc.add(state.isRunning ? StopClickingEvent() : CancelDelayedStartEvent());
         }

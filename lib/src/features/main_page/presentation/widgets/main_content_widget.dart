@@ -503,6 +503,9 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
                                 setState(() {
                                   _delayStartInputValue = (int.tryParse(value) ?? 0).clamp(0, 60);
                                 });
+                                context.read<ClickerBloc>().add(
+                                  UpdateDelayedStartSecondsEvent(delayedStartSeconds: _delayStartInputValue),
+                                );
                               },
                             ),
                           ),
