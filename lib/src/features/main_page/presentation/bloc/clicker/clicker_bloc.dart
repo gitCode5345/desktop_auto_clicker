@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:desktop_auto_clicker/src/core/constants/available_buttons.dart';
 import 'package:desktop_auto_clicker/src/core/constants/values.dart';
 import 'package:desktop_auto_clicker/src/core/usecases/usecase.dart';
 import 'package:desktop_auto_clicker/src/core/constants/dimensions.dart';
@@ -25,7 +26,7 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
       this._startClickingUseCase,
       this._stopClickingUseCase,
       this._updateClickingMsUseCase
-    ) : super(ClickerState()) {
+    ) : super(ClickerState(selectedButton: availableButtons.first)) {
     on<SelectButtonEvent>((event, emit) {
       emit(state.copyWith(selectedButton: event.button));
     });
