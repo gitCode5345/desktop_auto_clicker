@@ -1,21 +1,26 @@
 part of 'clicker_bloc.dart';
 
-enum ClickerStatus { initial, loading, running, stopped, error }
+enum ClickerStatus { initial, loading, countdown, running, stopped, error }
 
 class ClickerState extends Equatable {
   final ClickerStatus status;
   final ButtonClickConfigEntity? selectedButton;
+  final int? delayedStartSeconds;
   final String? errorMessage;
 
   const ClickerState({
     this.status = ClickerStatus.initial,
     this.selectedButton,
+    this.delayedStartSeconds,
     this.errorMessage,
   });
 
   bool get isRunning => status == ClickerStatus.running;
   bool get isLoading => status == ClickerStatus.loading;
-  bool get isBusy => isRunning || isLoading;
+  bool get isCountdown => status == ClickerStatus.countdown;
+
+  bool get isBusy => isRunning || isLoading || isCountdown;
+  bool get isStoppable => isRunning || isCountdown;
 
   double get cps {
     if (selectedButton == null || !isBusy) {
@@ -38,11 +43,13 @@ class ClickerState extends Equatable {
   ClickerState copyWith({
     ClickerStatus? status,
     ButtonClickConfigEntity? selectedButton,
+    int? delayedStartSeconds,
     String? errorMessage
   }) {
     return ClickerState(
       status: status ?? this.status,
       selectedButton: selectedButton ?? this.selectedButton,
+      delayedStartSeconds: delayedStartSeconds ?? this.delayedStartSeconds,
       errorMessage: errorMessage
     );
   }
@@ -51,6 +58,7 @@ class ClickerState extends Equatable {
   List<Object?> get props => [
     status,
     selectedButton,
+    delayedStartSeconds,
     errorMessage,
   ];
 }
