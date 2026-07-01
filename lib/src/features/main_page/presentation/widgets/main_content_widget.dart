@@ -55,7 +55,7 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
     if (state.isRunning) {
       return 'Статус: активний';
     } else if (state.isCountdown) {
-      return 'Запуск через ${state.delayedStartSeconds} секунд';
+      return 'Запуск через ${state.delayedCountdownRemainingSeconds} секунд';
     } else {
       return 'Статус: очікування';
     }
@@ -68,6 +68,35 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
       return AppColor.waiting;
     } else {
       return AppColor.textMuted;
+    }
+  }
+
+  void _stopClicker(ClickerState state, BuildContext context) {
+    if (state.isRunning) {
+      context.read<ClickerBloc>().add(
+        StopClickingEvent()
+      );
+    } else if (state.isCountdown) {
+      context.read<ClickerBloc>().add(
+        CancelDelayedStartEvent()
+      );
+    }
+  }
+
+  void _startClicker(BuildContext context, ClickerState state) {
+    if (_delayStartIsChecked && _delayStartInputValue > 0) {
+      context.read<ClickerBloc>().add(
+        StartClickingEvent(
+          button: state.selectedButton!.copyWith(delayMs: _validateAndClampMs()),
+          delayedStartSeconds: _validateAndClampDelayStart()
+        )
+      );
+    } else {
+      context.read<ClickerBloc>().add(
+        StartClickingEvent(
+          button: state.selectedButton!.copyWith(delayMs: _validateAndClampMs())
+        )
+      );
     }
   }
 
@@ -474,6 +503,9 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
                                 setState(() {
                                   _delayStartInputValue = (int.tryParse(value) ?? 0).clamp(0, 60);
                                 });
+                                context.read<ClickerBloc>().add(
+                                  UpdateDelayedStartSecondsEvent(delayedStartSeconds: _delayStartInputValue),
+                                );
                               },
                             ),
                           ),
@@ -499,27 +531,14 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
           children: <Widget>[
             StartButtonWidget(
               enabled: state.selectedButton != null && !state.isBusy,
-              onTap: (_delayStartIsChecked && _delayStartInputValue > 0) ? () {
-                context.read<ClickerBloc>().add(
-                  StartClickingEvent(
-                    button: state.selectedButton!.copyWith(delayMs: _validateAndClampMs()),
-                    delayedStartSeconds: _validateAndClampDelayStart()
-                  )
-                );
-              } : () {
-                context.read<ClickerBloc>().add(
-                  StartClickingEvent(
-                    button: state.selectedButton!.copyWith(delayMs: _validateAndClampMs())
-                  )
-                );
-              },
+              onTap: () => _startClicker(context, state),
               padding: const EdgeInsets.symmetric(
                 vertical: 12.0,
                 horizontal: 24.0
               ),
               child: Center(
                 child: InterTextWidget(
-                  data: state.isCountdown ? 'Залишилось ${state.delayedStartSeconds}' : 'Cтарт',
+                  data: state.isCountdown ? 'Залишилось ${state.delayedCountdownRemainingSeconds}' : 'Cтарт',
                   fontSize: 16.0,
                 ),
               )
@@ -527,15 +546,11 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
             const SizedBox(width: 16.0),
             StopButtonWidget(
               enabled: state.isStoppable,
-              onTap: state.isRunning ? () {
-                context.read<ClickerBloc>().add(
-                  StopClickingEvent()
-                );
-              } : () {
-                context.read<ClickerBloc>().add(
-                  CancelDelayedStartEvent()
-                );
-              },
+              onTap: () => _stopClicker(state, context),
+              padding: const EdgeInsets.symmetric(
+                vertical: 12.0,
+                horizontal: 24.0
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

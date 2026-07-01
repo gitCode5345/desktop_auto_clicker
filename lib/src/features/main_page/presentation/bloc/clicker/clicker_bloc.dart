@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:desktop_auto_clicker/src/core/constants/available_buttons.dart';
 import 'package:desktop_auto_clicker/src/core/constants/values.dart';
 import 'package:desktop_auto_clicker/src/core/usecases/usecase.dart';
 import 'package:desktop_auto_clicker/src/core/constants/dimensions.dart';
@@ -25,7 +26,7 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
       this._startClickingUseCase,
       this._stopClickingUseCase,
       this._updateClickingMsUseCase
-    ) : super(ClickerState()) {
+    ) : super(ClickerState(selectedButton: availableButtons.first.copyWith(delayMs: minSliderValue))) {
     on<SelectButtonEvent>((event, emit) {
       emit(state.copyWith(selectedButton: event.button));
     });
@@ -33,6 +34,9 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
     on<StopClickingEvent>(_onStopClickingEvent);
     on<UpdateClickingMsEvent>(_onUpdateClickingMsEvent);
     on<CancelDelayedStartEvent>(_onCancelDelayedStartEvent);
+    on<UpdateDelayedStartSecondsEvent>((event, emit) {
+      emit(state.copyWith(delayedStartSeconds: event.delayedStartSeconds));
+    });
   }
 
   bool _runCountdown(int seconds, Emitter<ClickerState> emit) {
@@ -44,7 +48,7 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
 
     emit(state.copyWith(
       status: ClickerStatus.countdown,
-      delayedStartSeconds: seconds
+      delayedCountdownRemainingSeconds: seconds
     ));
 
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -55,10 +59,10 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
         _countdownCompleter?.complete(true);
         emit(state.copyWith(
           status: ClickerStatus.loading,
-          delayedStartSeconds: null
+          delayedCountdownRemainingSeconds: null
         ));
       } else {
-        emit(state.copyWith(delayedStartSeconds: remainingSeconds));
+        emit(state.copyWith(delayedCountdownRemainingSeconds: remainingSeconds));
       }
     });
 
@@ -154,7 +158,7 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
 
     emit(state.copyWith(
       status: ClickerStatus.stopped,
-      delayedStartSeconds: null
+      delayedCountdownRemainingSeconds: null
     ));
   }
 

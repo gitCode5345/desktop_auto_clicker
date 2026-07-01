@@ -6,12 +6,14 @@ class ClickerState extends Equatable {
   final ClickerStatus status;
   final ButtonClickConfigEntity? selectedButton;
   final int? delayedStartSeconds;
+  final int? delayedCountdownRemainingSeconds;
   final String? errorMessage;
 
   const ClickerState({
     this.status = ClickerStatus.initial,
     this.selectedButton,
     this.delayedStartSeconds,
+    this.delayedCountdownRemainingSeconds,
     this.errorMessage,
   });
 
@@ -44,12 +46,14 @@ class ClickerState extends Equatable {
     ClickerStatus? status,
     ButtonClickConfigEntity? selectedButton,
     int? delayedStartSeconds,
+    int? delayedCountdownRemainingSeconds,
     String? errorMessage
   }) {
     return ClickerState(
       status: status ?? this.status,
       selectedButton: selectedButton ?? this.selectedButton,
       delayedStartSeconds: delayedStartSeconds ?? this.delayedStartSeconds,
+      delayedCountdownRemainingSeconds: delayedCountdownRemainingSeconds,
       errorMessage: errorMessage
     );
   }
@@ -59,6 +63,7 @@ class ClickerState extends Equatable {
     status,
     selectedButton,
     delayedStartSeconds,
+    delayedCountdownRemainingSeconds,
     errorMessage,
   ];
 }

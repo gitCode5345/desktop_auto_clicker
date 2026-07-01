@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 class StopButtonWidget extends StatelessWidget {
   final Widget child;
   final bool enabled;
+  final EdgeInsetsGeometry? padding;
   final VoidCallback? onTap;
 
   const StopButtonWidget({
     required this.child,
     required this.enabled,
+    this.padding,
     this.onTap,
     super.key,
   });
@@ -24,7 +26,7 @@ class StopButtonWidget extends StatelessWidget {
             opacity: enabled ? 1.0 : 0.5,
             duration: const Duration(milliseconds: 150),
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 24.0),
+              padding: padding,
               decoration: BoxDecoration(
                 color: enabled ? AppColor.danger : AppColor.danger.withAlpha(25),
                 border: Border.all(color: AppColor.danger.withAlpha(25), width: 1),

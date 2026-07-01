@@ -42,6 +42,17 @@ final class UpdateClickingMsEvent extends ClickerEvent {
   List<Object?> get props => [button];
 }
 
+final class UpdateDelayedStartSecondsEvent extends ClickerEvent {
+  final int delayedStartSeconds;
+
+  const UpdateDelayedStartSecondsEvent({
+    required this.delayedStartSeconds
+  });
+
+  @override
+  List<Object?> get props => [delayedStartSeconds];
+}
+
 final class StopClickingEvent extends ClickerEvent {}
 
 final class CancelDelayedStartEvent extends ClickerEvent {}
