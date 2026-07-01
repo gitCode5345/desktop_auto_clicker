@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:desktop_auto_clicker/src/core/constants/values.dart';
 import 'package:desktop_auto_clicker/src/core/usecases/usecase.dart';
 import 'package:desktop_auto_clicker/src/core/constants/dimensions.dart';
@@ -16,6 +18,9 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
   final UpdateClickingMsUseCase _updateClickingMsUseCase;
   final StopClickingUseCase _stopClickingUseCase;
 
+  Timer? _countdownTimer;
+  Completer<bool>? _countdownCompleter;
+
   ClickerBloc(
       this._startClickingUseCase,
       this._stopClickingUseCase,
@@ -27,6 +32,37 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
     on<StartClickingEvent>(_onStartClickingEvent);
     on<StopClickingEvent>(_onStopClickingEvent);
     on<UpdateClickingMsEvent>(_onUpdateClickingMsEvent);
+    on<CancelDelayedStartEvent>(_onCancelDelayedStartEvent);
+  }
+
+  bool _runCountdown(int seconds, Emitter<ClickerState> emit) {
+    if (seconds <= 0) {
+      return false;
+    }
+
+    _countdownCompleter = Completer<bool>();
+
+    emit(state.copyWith(
+      status: ClickerStatus.countdown,
+      delayedStartSeconds: seconds
+    ));
+
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      final remainingSeconds = seconds - timer.tick;
+
+      if (remainingSeconds <= 0 || _countdownCompleter?.isCompleted == true) {
+        timer.cancel();
+        _countdownCompleter?.complete(true);
+        emit(state.copyWith(
+          status: ClickerStatus.loading,
+          delayedStartSeconds: null
+        ));
+      } else {
+        emit(state.copyWith(delayedStartSeconds: remainingSeconds));
+      }
+    });
+
+    return true;
   }
 
   Future<void> _onStartClickingEvent(StartClickingEvent event, Emitter<ClickerState> emit) async {
@@ -35,6 +71,28 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
         status: ClickerStatus.loading,
         selectedButton: event.button
       ));
+
+      if (event.delayedStartSeconds > 0) {
+        final countdownStarted = _runCountdown(event.delayedStartSeconds, emit);
+
+        if (!countdownStarted) {
+          emit(state.copyWith(
+            status: ClickerStatus.error,
+            errorMessage: 'Failed to start countdown.'
+          ));
+          return;
+        }
+
+        final countdownCompleted = await _countdownCompleter?.future ?? false;
+
+        if (!countdownCompleted) {
+          emit(state.copyWith(
+            status: ClickerStatus.stopped,
+            delayedStartSeconds: null
+          ));
+          return;
+        }
+      }
 
       final isRunning = await _startClickingUseCase(event.button);
 
@@ -84,5 +142,25 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
         errorMessage: 'Error $e'
       ));
     }
+  }
+
+  Future<void> _onCancelDelayedStartEvent(CancelDelayedStartEvent event, Emitter<ClickerState> emit) async {
+    _countdownTimer?.cancel();
+    _countdownTimer = null;
+
+    if (_countdownCompleter?.isCompleted == false) {
+      _countdownCompleter?.complete(false);
+    }
+
+    emit(state.copyWith(
+      status: ClickerStatus.stopped,
+      delayedStartSeconds: null
+    ));
+  }
+
+  @override
+  Future<void> close() {
+    _countdownTimer?.cancel();
+    return super.close();
   }
 }
