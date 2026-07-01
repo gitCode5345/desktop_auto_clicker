@@ -48,7 +48,7 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
 
     emit(state.copyWith(
       status: ClickerStatus.countdown,
-      delayedStartSeconds: seconds
+      delayedCountdownRemainingSeconds: seconds
     ));
 
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -59,10 +59,10 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
         _countdownCompleter?.complete(true);
         emit(state.copyWith(
           status: ClickerStatus.loading,
-          delayedStartSeconds: null
+          delayedCountdownRemainingSeconds: null
         ));
       } else {
-        emit(state.copyWith(delayedStartSeconds: remainingSeconds));
+        emit(state.copyWith(delayedCountdownRemainingSeconds: remainingSeconds));
       }
     });
 
@@ -158,7 +158,7 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
 
     emit(state.copyWith(
       status: ClickerStatus.stopped,
-      delayedStartSeconds: null
+      delayedCountdownRemainingSeconds: null
     ));
   }
 

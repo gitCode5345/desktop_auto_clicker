@@ -55,7 +55,7 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
     if (state.isRunning) {
       return 'Статус: активний';
     } else if (state.isCountdown) {
-      return 'Запуск через ${state.delayedStartSeconds} секунд';
+      return 'Запуск через ${state.delayedCountdownRemainingSeconds} секунд';
     } else {
       return 'Статус: очікування';
     }
@@ -538,7 +538,7 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
               ),
               child: Center(
                 child: InterTextWidget(
-                  data: state.isCountdown ? 'Залишилось ${state.delayedStartSeconds}' : 'Cтарт',
+                  data: state.isCountdown ? 'Залишилось ${state.delayedCountdownRemainingSeconds}' : 'Cтарт',
                   fontSize: 16.0,
                 ),
               )
