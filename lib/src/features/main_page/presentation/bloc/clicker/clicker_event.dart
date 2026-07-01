@@ -20,9 +20,11 @@ final class SelectButtonEvent extends ClickerEvent {
 
 final class StartClickingEvent extends ClickerEvent {
   final ButtonClickConfigEntity button;
+  final int delayedStartSeconds;
 
   const StartClickingEvent({
-    required this.button
+    required this.button,
+    this.delayedStartSeconds = 0
   });
 
   @override
@@ -41,3 +43,5 @@ final class UpdateClickingMsEvent extends ClickerEvent {
 }
 
 final class StopClickingEvent extends ClickerEvent {}
+
+final class CancelDelayedStartEvent extends ClickerEvent {}
