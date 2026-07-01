@@ -23,7 +23,7 @@ class ClickerState extends Equatable {
   bool get isStoppable => isRunning || isCountdown;
 
   double get cps {
-    if (selectedButton == null || !isBusy) {
+    if (selectedButton == null || !isRunning) {
       return 0.0;
     }
 
@@ -31,7 +31,7 @@ class ClickerState extends Equatable {
   }
 
   double get barHeight {
-    if (selectedButton == null || !isBusy) {
+    if (selectedButton == null || !isRunning) {
       return minBarHeight;
     }
 
