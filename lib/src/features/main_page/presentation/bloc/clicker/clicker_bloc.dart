@@ -26,7 +26,7 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
       this._startClickingUseCase,
       this._stopClickingUseCase,
       this._updateClickingMsUseCase
-    ) : super(ClickerState(selectedButton: availableButtons.first)) {
+    ) : super(ClickerState(selectedButton: availableButtons.first.copyWith(delayMs: minSliderValue))) {
     on<SelectButtonEvent>((event, emit) {
       emit(state.copyWith(selectedButton: event.button));
     });
