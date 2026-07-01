@@ -36,8 +36,6 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
   double _sliderValue = 10;
 
   int _delayStartInputValue = 0;
-  bool _isDelayCountingDown = false;
-  int _delayStartSeconds = 0;
   bool _delayStartIsChecked = false;
 
   int _validateAndClampMs() {
@@ -53,40 +51,11 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
     return value;
   }
 
-  void _startCountDown() {
-    setState(() {
-      _isDelayCountingDown = true;
-      _delayStartSeconds = _delayStartInputValue;
-    });
-
-    Timer.periodic(Duration(seconds: 1), (timer) {
-      if (_delayStartSeconds > 0) {
-        setState(() {
-          _delayStartSeconds--;
-        });
-      } else {
-        timer.cancel();
-        setState(() {
-          _isDelayCountingDown = false;
-        });
-        final bloc = context.read<ClickerBloc>();
-        if (bloc.state.selectedButton != null) {
-          int ms = _validateAndClampMs();
-          bloc.add(
-            StartClickingEvent(
-              button: bloc.state.selectedButton!.copyWith(delayMs: ms)
-            )
-          );
-        }
-      }
-    });
-  }
-
   String _getActivityText(ClickerState state) {
     if (state.isRunning) {
       return 'Статус: активний';
-    } else if (_isDelayCountingDown) {
-      return 'Запуск через $_delayStartSeconds секунд';
+    } else if (state.isCountdown) {
+      return 'Запуск через ${state.delayedStartSeconds} секунд';
     } else {
       return 'Статус: очікування';
     }
@@ -95,7 +64,7 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
   Color _getIndicatorColor(ClickerState state) {
     if (state.isRunning) {
       return AppColor.success;
-    } else if (_isDelayCountingDown) {
+    } else if (state.isCountdown) {
       return AppColor.waiting;
     } else {
       return AppColor.textMuted;
@@ -529,14 +498,18 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             StartButtonWidget(
-              enabled: state.selectedButton != null && !state.isBusy && !_isDelayCountingDown,
+              enabled: state.selectedButton != null && !state.isBusy,
               onTap: (_delayStartIsChecked && _delayStartInputValue > 0) ? () {
-                _startCountDown();
-              } : () {
-                int ms = _validateAndClampMs();
                 context.read<ClickerBloc>().add(
                   StartClickingEvent(
-                    button: state.selectedButton!.copyWith(delayMs: ms)
+                    button: state.selectedButton!.copyWith(delayMs: _validateAndClampMs()),
+                    delayedStartSeconds: _validateAndClampDelayStart()
+                  )
+                );
+              } : () {
+                context.read<ClickerBloc>().add(
+                  StartClickingEvent(
+                    button: state.selectedButton!.copyWith(delayMs: _validateAndClampMs())
                   )
                 );
               },
@@ -546,17 +519,21 @@ class _MainContentWidgetState extends State<MainContentWidget> with WidgetsBindi
               ),
               child: Center(
                 child: InterTextWidget(
-                  data: _isDelayCountingDown ? 'Залишилось $_delayStartSeconds' : 'Cтарт',
+                  data: state.isCountdown ? 'Залишилось ${state.delayedStartSeconds}' : 'Cтарт',
                   fontSize: 16.0,
                 ),
               )
             ),
             const SizedBox(width: 16.0),
             StopButtonWidget(
-              enabled: state.isRunning,
-              onTap: () {
+              enabled: state.isStoppable,
+              onTap: state.isRunning ? () {
                 context.read<ClickerBloc>().add(
                   StopClickingEvent()
+                );
+              } : () {
+                context.read<ClickerBloc>().add(
+                  CancelDelayedStartEvent()
                 );
               },
               child: Row(
