@@ -90,10 +90,6 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
         final countdownCompleted = await _countdownCompleter?.future ?? false;
 
         if (!countdownCompleted) {
-          emit(state.copyWith(
-            status: ClickerStatus.stopped,
-            delayedStartSeconds: null
-          ));
           return;
         }
       }
@@ -149,17 +145,24 @@ class ClickerBloc extends Bloc<ClickerEvent, ClickerState> {
   }
 
   Future<void> _onCancelDelayedStartEvent(CancelDelayedStartEvent event, Emitter<ClickerState> emit) async {
-    _countdownTimer?.cancel();
-    _countdownTimer = null;
+    try {
+      _countdownTimer?.cancel();
+      _countdownTimer = null;
 
-    if (_countdownCompleter?.isCompleted == false) {
-      _countdownCompleter?.complete(false);
+      if (_countdownCompleter?.isCompleted == false) {
+        _countdownCompleter?.complete(false);
+      }
+
+      emit(state.copyWith(
+          status: ClickerStatus.stopped,
+          delayedCountdownRemainingSeconds: null
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        status: ClickerStatus.error,
+        errorMessage: 'Error $e'
+      ));
     }
-
-    emit(state.copyWith(
-      status: ClickerStatus.stopped,
-      delayedCountdownRemainingSeconds: null
-    ));
   }
 
   @override
