@@ -18,22 +18,22 @@ The project follows **Clean Architecture** principles with clear layer separatio
 
 ```
 lib/src/
-├── core/                     # Shared constants, enums, themes, base usecases
-├── configs/injector/         # Global Dependency Injection setup (get_it)
+├── core/                      # Shared constants, enums, themes, base usecases
+├── configs/injector/          # Global Dependency Injection setup (get_it)
 └── features/main_page/
     ├── domain/                # Entities, repository interfaces, usecases
-    │   ├── entities/           #   ButtonClickConfigEntity
-    │   ├── repository/         #   ClickerRepository (interface)
-    │   └── usecases/           #   StartClicking / StopClicking / UpdateClickingMs
+    │   ├── entities/          # ButtonClickConfigEntity
+    │   ├── repository/        # ClickerRepository (interface)
+    │   └── usecases/          # StartClicking / StopClicking / UpdateClickingMs
     ├── data/                  # Repository implementation + FFI data source
-    │   ├── data_sources/ffi/   #   RunClickerService (calls into the native library)
-    │   └── repository/         #   ClickerRepositoryImpl
+    │   ├── data_sources/ffi/  # RunClickerService (calls into the native library)
+    │   └── repository/        # ClickerRepositoryImpl
     ├── di/                    # Feature-level DI registration (MainPageDependency)
     └── presentation/          # BLoC, pages and UI widgets
-        ├── bloc/clicker/       #   ClickerBloc (clicker state, countdown timer)
-        ├── models/             #   Presentation-only models (e.g. nav destination items)
-        ├── pages/              #   MainPage (UI layout, BLoC wiring)
-        └── widgets/            #   Slider, dropdown, CPS graph, start/stop buttons
+        ├── bloc/clicker/      # ClickerBloc (clicker state, countdown timer)
+        ├── models/            # Presentation-only models (e.g. nav destination items)
+        ├── pages/             # MainPage (UI layout, BLoC wiring)
+        └── widgets/           # Slider, dropdown, CPS graph, start/stop buttons
 ```
 
 The actual clicking logic lives in native code and is invoked via `dart:ffi`:
@@ -103,7 +103,7 @@ The compiled app will be available in `build/windows/x64/runner/Release/` or `bu
 ├── assets/                 # Fonts, icons, clicker resources
 ├── windows/                # Windows platform-specific code (CMake, runner)
 ├── macos/                  # macOS platform-specific code (Xcode project)
-└── pubspec.yaml             # Flutter dependencies and configuration
+└── pubspec.yaml            # Flutter dependencies and configuration
 ```
 
 ## ⚠️ Disclaimer
