@@ -109,7 +109,3 @@ The compiled app will be available in `build/windows/x64/runner/Release/` or `bu
 ## ⚠️ Disclaimer
 
 This tool is intended for legitimate use: testing, automating repetitive tasks, and personal productivity. Using an auto clicker may violate the terms of service of some applications or online games (e.g. it could result in a ban) — use it at your own discretion and risk.
-
-## 📄 License
-
-No license is currently specified in this repository. Add a `LICENSE` file if you'd like to make one explicit.
