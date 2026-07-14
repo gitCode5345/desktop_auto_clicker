@@ -1,6 +1,7 @@
 import 'package:desktop_auto_clicker/src/core/constants/app_images.dart';
 import 'package:desktop_auto_clicker/src/core/constants/dimensions.dart';
 import 'package:desktop_auto_clicker/src/core/themes/app_color.dart';
+import 'package:desktop_auto_clicker/src/features/main_page/presentation/widgets/app_bar_widget.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/presentation/widgets/main_content_widget.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/presentation/models/navigation_destination_item_model.dart';
 import 'package:desktop_auto_clicker/src/features/main_page/presentation/widgets/sidebar_widget.dart';
@@ -48,11 +49,7 @@ class _ResponsiveLayoutWidgetState extends State<ResponsiveLayoutWidget> {
           backgroundColor: AppColor.windowBg,
           appBar: isDesktop
               ? null
-              : AppBar(
-                  backgroundColor: AppColor.sidebarBg,
-                  foregroundColor: AppColor.textMain,
-                  title: const Text('ClickStorm'),
-                ),
+              : AppBarWidget(),
           drawer: isDesktop
               ? null
               : SidebarWidget(

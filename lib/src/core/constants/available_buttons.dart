@@ -3,11 +3,11 @@ import 'package:desktop_auto_clicker/src/features/main_page/domain/entities/butt
 
 const List<ButtonClickConfigEntity> availableButtons = [
   ButtonClickConfigEntity(
-    name: 'Left Mouse Button',
+    name: 'Ліва кнопка миші (ЛКМ)',
     button: Button.leftMouseButton,
   ),
   ButtonClickConfigEntity(
-    name: 'Right Mouse Button',
+    name: 'Права кнопка миші (ПКМ)',
     button: Button.rightMouseButton,
   ),
 ];
